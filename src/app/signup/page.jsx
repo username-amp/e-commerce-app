@@ -129,8 +129,8 @@ export default function Page() {
 
   return (
     <div className="h-screen bg-cover bg-center" >
-      <div className="grid lg:grid-cols-2 h-[95%]" style={{ backgroundImage: 'url("/BG.jpg")', backgroundSize: 'cover', backgroundPosition: 'center' }}>
-        <div className="flex flex-col gap-4 p-6 md:p-10">
+      <div className="grid lg:grid-cols-2 h-[95%] " style={{ backgroundImage: 'url("/BG.jpg")', backgroundSize: 'cover', backgroundPosition: 'center' }}>
+        <div className="flex flex-col gap-4 p-6 md:p-10 ">
           <div className="flex flex-1 items-center justify-center">
             <div className="w-full max-w-xs">
               <LogoHeader />
@@ -138,7 +138,7 @@ export default function Page() {
           </div>
         </div>
 
-        <div className="flex flex-1 items-center justify-center ">
+        <div className="flex flex-1 items-center justify-center sm:h-full ">
           {showStep1 && (
             <div className="w-full max-w-lg animate-fade-left animate-once animate-delay-[2ms]">
               <div className="flex flex-col gap-6 bg-white p-10 rounded-lg shadow-lg">
