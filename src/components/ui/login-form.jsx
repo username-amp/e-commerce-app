@@ -24,7 +24,8 @@ export function LoginForm({ className, ...props }) {
   };
 
   const handleFormSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
+
 
     try {
       const response = await axios.post("http://localhost:8003/graphql", {
@@ -73,19 +74,14 @@ export function LoginForm({ className, ...props }) {
   };
 
   return (
-    <form
-      className={cn("flex flex-col gap-6 bg-white p-10 rounded-lg", className)}
-      {...props}
-      onSubmit={handleFormSubmit}
-    >
+
+    <form className={cn("flex flex-col gap-6 bg-white p-10 rounded-lg ", className)} {...props} onSubmit={handleFormSubmit}>
       <div className="flex flex-col items-start gap-2 text-start">
         <h1 className="text-2xl font-bold">Sign in</h1>
         <p className="text-balance text-sm text-muted-foreground font-semibold">
-          New user?
-          <Link
-            href="/register"
-            className="text-[#1d4ed8] ml-1 hover:text-[#1e40af]"
-          >
+          New user? 
+          <Link href="/signup" className="text-[#1d4ed8] ml-1 hover:text-[#1e40af]">
+
             Create an account
           </Link>
         </p>
