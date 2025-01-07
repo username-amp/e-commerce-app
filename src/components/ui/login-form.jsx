@@ -24,7 +24,7 @@ export function LoginForm({ className, ...props }) {
   }
 
   const handleFormSubmit = async (e) => {
-    e.preventDefault
+    e.preventDefault()
 
     try {
         const response = await axios.post('') //specify your login endpoint here
