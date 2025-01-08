@@ -113,8 +113,8 @@ const page = () => {
               {steps === 1 && (
                 <div className={cn("flex flex-col gap-6 bg-white p-10 rounded-lg animate-fade-left animate-once animate-delay-[1ms] animate-normal")}>
                   <div className="flex flex-col items-start gap-2 text-start">
-                    <h1 className="text-2xl font-bold">Recover your account</h1>
-                    <p className="text-balance text-sm text-muted-foreground font-semibold">
+                    <h1 className="text-2xl font-bold font-aileron tracking-wide">Recover your account</h1>
+                    <p className="text-balance text-sm text-muted-foreground font-semibold font-aileron ">
                       Already have an account?
                       <Link
                         href="/signin"
@@ -126,7 +126,7 @@ const page = () => {
                   </div>
                   <div className="grid gap-2">
                     <div className="grid gap-2">
-                      <Label htmlFor="email">Email</Label>
+                      <Label htmlFor="email" className="font-aileron  font-bold">Email</Label>
                       <Input
                         id="email"
                         type="text"
@@ -139,15 +139,15 @@ const page = () => {
 
                     {/* Reminder text */}
                     {error.email 
-                                ? <p className="text-sm text-red-500 font-bold mt-0">{error.email}</p>
-                                : <p className="text-sm text-muted-foreground mt-0"> We need your registered email to send you an OTP</p>
+                                ? <p className="text-sm text-red-500 font-bold mt-0 font-aileron">{error.email}</p>
+                                : <p className="text-sm text-muted-foreground mt-0 font-aileron font-normal"> We need your registered email to send you an OTP</p>
                     }
 
                   
 
                     <Button
                       type="button"
-                      className="w-full bg-[#0339D9] hover:bg-[#184EEB] font-bold mt-3"
+                      className="w-full bg-[#0339D9] hover:bg-[#184EEB] font-bold font-aileron tracking-widest mt-3"
                       onClick={handleContinue}
                     >
                       Continue
@@ -162,15 +162,15 @@ const page = () => {
                     <MdMarkEmailUnread />
                   </div>
                   <div className="flex flex-col items-start gap-2 text-start">
-                    <h1 className="text-4xl font-bold">Update your password</h1>
+                    <h1 className="text-4xl font-bold font-aileron">Update your password</h1>
 
-                    <p className="text-muted-foreground text-sm mt-5">
+                    <p className="text-muted-foreground text-sm mt-5 font-aileron  font-normal">
                       Enter the code we just sent to
                     </p>
-                    <p className="text-sm font-bold">ewad@gmail.com</p>
+                    <p className="text-sm font-bold font-aileron">{email || "Jepoydizon@gmail.com"}</p>
                   </div>
                   <div className="grid gap-2">
-                    <div className="flex justify-start w-full">
+                    <div className="flex justify-start w-full font-aileron">
                        <InputOTP
                         maxLength={6}
                         value={otp}
@@ -193,14 +193,14 @@ const page = () => {
                         </div>
 
                     <div className="flex justify-center">
-                      <p className="text-sm mr-9 mt-5 font-bold">2:00</p>
+                      <p className="text-sm mr-9 mt-5 font-bold font-aileron">2:00</p>
                     </div>
 
                     <div className="flex justify-end items-center">
                       <div className="flex justify-evenly gap-5 mr-12 mt-5">
                         <Button
                           type="submit"
-                          className="w-full bg-white text-black border font-bold hover:text-white"
+                          className="w-full bg-white text-black border font-bold font-aileron tracking-widest hover:text-white"
                           onClick={handleBackToStep1}
                         >
                           Back
@@ -208,7 +208,7 @@ const page = () => {
 
                         <Button
                           type="button"
-                          className="w-full bg-white text-black border font-bold hover:text-white"
+                          className="w-full bg-white text-black border font-bold font-aileron tracking-widest  hover:text-white"
                           onClick={handleResendingCode}
                         >
                           Resend code
@@ -229,7 +229,7 @@ const page = () => {
                   <div className="flex flex-col gap-2 bg-white p-10 rounded-lg">
                     <div className="flex flex-col items-start gap-2 text-start">
                       <div>
-                        <h1 className="text-4xl font-bold">Update your password</h1>
+                        <h1 className="text-4xl font-bold font-aileron">Update your password</h1>
                       </div>
                     </div>
 
@@ -240,14 +240,14 @@ const page = () => {
                       </Avatar>
 
                       <div className="flex justify-center items-start flex-col h-full">
-                        <h3 className="text-md font-semibold">{email || "Jepoydizon@gmail.com"}</h3>
-                        <h5 className="text-sm text-muted-foreground">{username || "Jepoydizon"}</h5>
+                        <h3 className="text-md font-semibold font-aileron">{email || "Jepoydizon@gmail.com"}</h3>
+                        <h5 className="text-sm text-muted-foreground font-aileron font-normal">{username || "Jepoydizon"}</h5>
                       </div>
                     </div>
 
                     <div className="grid gap-6">
                       <div>
-                        <Label htmlFor="password">New password</Label>
+                        <Label htmlFor="password" className="font-semibold font-aileron">New password</Label>
                         <div className="relative flex items-center mt-0">
                           <Input
                             id="password"
@@ -272,7 +272,7 @@ const page = () => {
                       </div>
 
                       <div>
-                        <Label htmlFor="password">Repeat password</Label>
+                        <Label htmlFor="password" className="font-semibold font-aileron">Repeat password</Label>
                         <div className="relative flex items-center mt-0">
                           <Input
                             id="confirmPassword"
@@ -299,7 +299,7 @@ const page = () => {
 
                       <Button
                         type="submit"
-                        className="w-full bg-[#0339D9] hover:bg-[#184EEB] font-bold"
+                        className="w-full bg-[#0339D9] hover:bg-[#184EEB] font-bold font-aileron tracking-widest"
                       >
                         Update password
                       </Button>
