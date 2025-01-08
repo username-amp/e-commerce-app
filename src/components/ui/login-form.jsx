@@ -81,7 +81,6 @@ export function LoginForm({ className, ...props }) {
         <p className="text-balance text-sm text-muted-foreground font-semibold">
           New user? 
           <Link href="/signup" className="text-[#1d4ed8] ml-1 hover:text-[#1e40af]">
-
             Create an account
           </Link>
         </p>
@@ -101,7 +100,7 @@ export function LoginForm({ className, ...props }) {
           <div className="flex items-center">
             <Label htmlFor="password">Password</Label>
             <Link
-              href="#"
+              href="/recovery"
               className=" text-[#1d4ed8] ml-auto text-sm underline-offset-4 hover:underline"
             >
               Forgot your password?

@@ -138,7 +138,7 @@ export default function Page() {
         confirmPassword: cpass,
         role: "customer",
         address: address || null,
-        phoneNumber: phone || null,
+        phoneNumber: phone ,
         gender: gender,
         birthdate: birthdate,
       };
