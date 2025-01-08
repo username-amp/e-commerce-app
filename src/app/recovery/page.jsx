@@ -60,6 +60,7 @@ const page = () => {
   }
 
   const handleResendingCode = async () =>{
+    //Your logic for resending otp
   }
 
   const handleOtp = () =>{
@@ -108,6 +109,7 @@ const page = () => {
         <div className="flex flex-col gap-4 p-6 md:p-10">
           <div className="flex flex-1 items-center justify-center ">
             <div className="w-full max-w-lg">
+              {/* First form */}
               {steps === 1 && (
                 <div className={cn("flex flex-col gap-6 bg-white p-10 rounded-lg animate-fade-left animate-once animate-delay-[1ms] animate-normal")}>
                   <div className="flex flex-col items-start gap-2 text-start">
@@ -150,15 +152,10 @@ const page = () => {
                     >
                       Continue
                     </Button>
-
-                    {/* Display error message if credentials are wrong */}
-                    {/* {errorHandle && (
-                      <p className="text-red-500 text-sm mt-2 text-center">{errorHandle}</p>
-                    )} */}
                   </div>
                 </div>
               )}
-
+              {/* Second form */}
               {steps === 2 && (
                 <div className={cn("flex flex-col gap-6 bg-white p-10 rounded-lg animate-fade-left animate-once animate-delay-[1ms] animate-normal")}>
                   <div className="text-8xl text-gray-400">
@@ -226,7 +223,7 @@ const page = () => {
                   </div>
                 </div>
               )}
-
+              {/* Third form */}
               {steps === 3 && (
                 <form className="w-full max-w-lg animate-fade-left animate-once animate-delay-[2ms] mx-auto flex justify-center" onSubmit={handleUpdatePassword}>
                   <div className="flex flex-col gap-2 bg-white p-10 rounded-lg">
