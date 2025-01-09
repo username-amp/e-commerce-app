@@ -51,6 +51,14 @@ const RESET_PASSWORD_MUTATION = `
   }
 `;
 
+const GET_USER_QUERY = `
+  query GetUserByEmail($email: String!) {
+    getUsernameByEmail(email: $email) {
+      username
+    }
+  }
+`;
+
 const page = () => {
   const [firstPassShow, setFirstPassShow] = useState(false);
   const [secondPassShow, setSecondPassShow] = useState(false);
@@ -64,6 +72,8 @@ const page = () => {
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
   const [cpassword, setCPassword] = useState("");
+  const [timer, setTimer] = useState(120);
+  const [isResendDisabled, setIsResendDisabled] = useState(false);
 
   const [error, setError] = useState({
     email: "",
@@ -85,11 +95,33 @@ const page = () => {
     setSteps(1);
   };
 
+  // Timer logic
+  useEffect(() => {
+    let countdown;
+    if (isResendDisabled && timer > 0) {
+      countdown = setInterval(() => {
+        setTimer((prev) => prev - 1);
+      }, 1000);
+    }
+
+    if (timer === 0) {
+      setIsResendDisabled(false);
+    }
+
+    return () => clearInterval(countdown); // Clean up timer on unmount
+  }, [isResendDisabled, timer]);
+
+  const startTimer = () => {
+    setTimer(120); // Reset in 2 minutes
+    setIsResendDisabled(true); // Disable the resend button
+  };
+
   const handleResendingCode = async () => {
     try {
       const data = await fetchGraphQL(VERIFY_CODE_MUTATION, { email });
 
       if (data?.data?.verifyCode?.status === "true") {
+        startTimer();
       } else {
         console.error("Failed to resend verification code.");
       }
@@ -124,6 +156,7 @@ const page = () => {
 
       if (status === "true" && code === "200") {
         setSteps(2); // step 2
+        startTimer();
       } else {
         setError((error) => ({
           ...error,
@@ -221,6 +254,27 @@ const page = () => {
       setTimeout(() => setError((error) => ({ ...error, password: "" })), 5000);
     }
   };
+
+  useEffect(() => {
+    if (steps === 2) {
+      const fetchUsername = async () => {
+        try {
+          const data = await fetchGraphQL(GET_USER_QUERY, { email });
+
+          // Check if the response contains the username correctly
+          if (data?.data?.getUsernameByEmail) {
+            setUsername(data.data.getUsernameByEmail.username);
+          } else {
+            console.error("Username not found");
+          }
+        } catch (error) {
+          console.error("Failed to fetch username:", error);
+        }
+      };
+
+      fetchUsername();
+    }
+  }, [steps, email]);
 
   useEffect(() => {
     setSteps(1); // Starting with step 1
@@ -357,7 +411,14 @@ const page = () => {
                     </div>
 
                     <div className="flex justify-center">
-                      <p className="text-sm mr-9 mt-5 font-bold">2:00</p>
+                      {/* Timer Display */}
+                      {timer > 0 && (
+                        <p className="text-sm mr-9 mt-5 font-bold">
+                          {`${Math.floor(timer / 60)}:${String(
+                            timer % 60
+                          ).padStart(2, "0")}`}
+                        </p>
+                      )}
                     </div>
 
                     <div className="flex justify-end items-center">
@@ -370,10 +431,12 @@ const page = () => {
                           Back
                         </Button>
 
+                        {/* Resend Button */}
                         <Button
                           type="button"
                           className="w-full bg-white text-black border font-bold hover:text-white"
                           onClick={handleResendingCode}
+                          disabled={isResendDisabled}
                         >
                           Resend code
                         </Button>
