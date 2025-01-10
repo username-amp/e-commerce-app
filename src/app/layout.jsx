@@ -1,6 +1,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import localfont from "next/font/local"
 import "./globals.css";
+import ClientSessionProvider from "@/components/ui/ClientSessionProvider";// Import the client component
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -47,7 +48,8 @@ export default function RootLayout({ children }) {
       <body
         className={`${aileron.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        {/* Wrap children with ClientSessionProvider */}
+        <ClientSessionProvider>{children}</ClientSessionProvider>
       </body>
     </html>
   );

@@ -11,6 +11,8 @@ import { HiEye, HiEyeOff } from "react-icons/hi";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa6";
 import axios from "axios";
+import { signIn } from "next-auth/react";
+import { getSession } from "next-auth/react";
 
 export function LoginForm({ className, ...props }) {
   const [showPassword, setShowPassword] = useState(false);
@@ -24,8 +26,7 @@ export function LoginForm({ className, ...props }) {
   };
 
   const handleFormSubmit = async (e) => {
-    e.preventDefault()
-
+    e.preventDefault();
 
     try {
       const response = await axios.post("http://localhost:8003/graphql", {
@@ -66,21 +67,162 @@ export function LoginForm({ className, ...props }) {
   };
 
   const handleGoogleLogin = async () => {
-    // your code here
+    try {
+      console.log("Starting Google sign-in...");
+
+      // Initiate Google sign-in
+      const result = await signIn("google", { redirect: false });
+      console.log("Sign-in result:", result);
+
+      if (!result) {
+        setErrorHandler("No result returned from Google sign-in.");
+        return;
+      }
+
+      if (result.error) {
+        setErrorHandler(`Google sign-in error: ${result.error}`);
+        return;
+      }
+
+      console.log("Google sign-in was successful:", result);
+
+      // Wait for the session to be fully established
+      const session = await getSession();
+      console.log("Session after sign-in:", session);
+
+      if (!session || !session.user) {
+        console.error("Failed to retrieve user details from session.");
+        setErrorHandler(
+          "Unable to retrieve user information. Please try again."
+        );
+        return;
+      }
+
+      const { email, name, image } = session.user;
+      console.log("Retrieved user data:", { email, name, image });
+
+      console.log("Sending user data to backend...");
+      const response = await axios.post("http://localhost:8003/graphql", {
+        query: `mutation GoogleSignIn($email: String!, $name: String!, $image: String) {
+    googleSignin(email: $email, name: $name, image: $image) {
+      message
+      token
+    }
+  }`,
+        variables: { email, name, image: image || null },
+      });
+      console.log("Response from backend:", response.data);
+
+      const token = response.data?.data?.googleSignIn?.token;
+      if (!token) {
+        console.error("Token not received from backend.");
+        setErrorHandler("Sign-in failed. Please try again.");
+        return;
+      }
+
+      console.log("Storing token in cookies...");
+      document.cookie = `authToken=${token}`;
+
+      console.log("Redirecting to '/'...");
+      router.push("/");
+    } catch (error) {
+      console.error(
+        "An error occurred during Google sign-in:",
+        error?.message || error
+      );
+      setErrorHandler("Something went wrong. Please try again.");
+    }
   };
 
   const handleFacebookLogin = async () => {
-    // your code here
+    try {
+      console.log("Starting Facebook sign-in...");
+
+      // Initiate Facebook sign-in
+      const result = await signIn("facebook", { redirect: false });
+      console.log("Sign-in result:", result); // Debugging
+
+      if (!result) {
+        console.error("No result returned from Facebook sign-in.");
+        setErrorHandler("Sign-in failed. No response received.");
+        return;
+      }
+
+      if (result.error) {
+        console.error(`Facebook sign-in error: ${result.error}`);
+        const errorMessage =
+          result.error === "OAuthAccountNotLinked"
+            ? "This Facebook account is not linked to an existing account. Please sign up first."
+            : "Facebook sign-in failed. Please try again.";
+        setErrorHandler(errorMessage);
+        return;
+      }
+
+      console.log("Facebook sign-in was successful:", result);
+
+      // Wait for the session to be fully established
+      const session = await getSession();
+      console.log("Session after sign-in:", session); // Debugging session
+
+      if (!session || !session.user) {
+        console.error("Failed to retrieve user details from session.");
+        setErrorHandler(
+          "Unable to retrieve user information. Please try again."
+        );
+        return;
+      }
+
+      const { email, name, image } = session.user;
+
+      // Proceed to send the session data to the backend
+      console.log("Retrieved user data:", { email, name, image });
+
+      console.log("Sending user data to backend...");
+      const response = await axios.post("http://localhost:8003/graphql", {
+        query: `mutation FacebookSignIn($email: String!, $name: String!, $image: String) {
+        facebookSignin(email: $email, name: $name, image: $image) {
+          message
+          token
+        }
+      }`,
+        variables: { email, name, image: image || null },
+      });
+      console.log("Response from backend:", response.data);
+
+      const token = response.data?.data?.facebookSignIn?.token;
+      if (!token) {
+        console.error("Token not received from backend.");
+        setErrorHandler("Sign-in failed. Please try again.");
+        return;
+      }
+
+      console.log("Storing token in cookies...");
+      document.cookie = `authToken=${token}`;
+
+      console.log("Redirecting to '/'...");
+      router.push("/");
+    } catch (error) {
+      console.error(
+        "An error occurred during Facebook sign-in:",
+        error?.message || error
+      );
+      setErrorHandler("Something went wrong. Please try again.");
+    }
   };
 
   return (
-
-    <form className={cn("flex flex-col gap-6 bg-white p-10 rounded-lg ", className)} {...props} onSubmit={handleFormSubmit}>
+    <form
+      className={cn("flex flex-col gap-6 bg-white p-10 rounded-lg ", className)}
+      {...props}
+      onSubmit={handleFormSubmit}
+    >
       <div className="flex flex-col items-start gap-2 text-start">
+
         <h1 className="text-2xl font-bold font-aileron tracking-wide">Sign in</h1>
         <p className="text-balance text-sm text-muted-foreground font-semibold font-aileron">
           New user? 
           <Link href="/signup" className="text-[#1d4ed8] ml-1 hover:text-[#1e40af]">
+
             Create an account
           </Link>
         </p>
