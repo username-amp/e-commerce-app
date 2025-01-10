@@ -241,10 +241,10 @@ export default function Page() {
               <div className="flex flex-col gap-6 bg-white p-10 rounded-lg shadow-lg">
                 <div className="flex flex-col items-start gap-2 text-start">
                   <div>
-                    <p className="text-balance text-sm text-muted-foreground font-semibold ">
+                    <p className="text-balance text-sm text-muted-foreground font-semibold font-aileron ">
                       Step {steps} of 3
                     </p>
-                    <h1 className="text-2xl font-bold">Create an account</h1>
+                    <h1 className="text-2xl font-bold font-aileron tracking-wide">Create an account</h1>
                   </div>
                   <div className="flex gap-2">
                     {/* handle google login */}
@@ -269,16 +269,16 @@ export default function Page() {
                 </div>
                 <div className="grid gap-6">
                   <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
-                    <span className="relative z-10 bg-background px-2 text-muted-foreground">
+                    <span className="relative z-10 bg-background px-2 text-muted-foreground font-aileron font-normal">
                       Or continue with
                     </span>
                   </div>
 
                   <div>
-                    <p className="text-balance text-sm text-gray-600 font-semibold">
+                    <p className="text-balance text-sm text-gray-600 font-semibold font-aileron">
                       Sign up with email
                     </p>
-                    <p className="text-balance text-sm text-muted-foreground font-semibold">
+                    <p className="text-balance text-sm text-muted-foreground font-semibold font-aileron">
                       Already have an account?
                       <Link
                         href="/signin"
@@ -290,7 +290,7 @@ export default function Page() {
                   </div>
 
                   <div className="grid gap-2">
-                    <Label htmlFor="email">Email address</Label>
+                    <Label htmlFor="email" className="font-aileron font-semibold">Email address</Label>
                     <Input
                       id="email"
                       type="email"
@@ -308,7 +308,7 @@ export default function Page() {
 
                   <Button
                     type="button"
-                    className="w-full bg-[#0339D9] hover:bg-[#184EEB] font-bold"
+                    className="w-full bg-[#0339D9] hover:bg-[#184EEB] font-bold font-aileron tracking-widest"
                     onClick={handleContinue}
                   >
                     Continue
@@ -323,26 +323,26 @@ export default function Page() {
               <div className="flex flex-col gap-2 bg-white p-10 rounded-lg shadow-lg">
                 <div className="flex flex-col items-start gap-2 text-start">
                   <div>
-                    <p className="text-balance text-sm text-muted-foreground font-semibold ">
+                    <p className="text-balance text-sm text-muted-foreground font-semibold font-aileron">
                       Step {steps} of 3
                     </p>
-                    <h1 className="text-2xl font-bold">Create an account</h1>
+                    <h1 className="text-2xl font-bold font-aileron tracking-wide">Create an account</h1>
                   </div>
                 </div>
                 <div className="grid gap-6">
                   <div>
-                    <p className="text-balance text-sm text-muted-foreground font-semibold">
+                    <p className="text-balance text-sm text-muted-foreground font-semibold font-aileron">
                       Already have an account?
                       <Link
                         href="/signin"
-                        className="text-[#1d4ed8] ml-1 hover:text-[#1e40af]"
+                        className="text-[#1d4ed8] ml-1 hover:text-[#1e40af] font-aileron"
                       >
                         Sign in
                       </Link>
                     </p>
                   </div>
                   <div className="grid gap-2">
-                    <Label htmlFor="name">Full name</Label>
+                    <Label htmlFor="name" className="font-aileron font-semibold">Full name</Label>
                     <Input
                       id="name"
                       type="text"
@@ -359,7 +359,7 @@ export default function Page() {
                   </div>
 
                   <div className="grid gap-2">
-                    <Label htmlFor="username">Username</Label>
+                    <Label htmlFor="username" className="font-aileron font-semibold">Username</Label>
                     <Input
                       id="username"
                       type="text"
@@ -376,7 +376,7 @@ export default function Page() {
                   </div>
 
                   <div className="grid gap-2">
-                    <Label htmlFor="phone">Phone number</Label>
+                    <Label htmlFor="phone" className="font-aileron font-semibold">Phone number</Label>
                     <Input
                       id="phone"
                       type="text"
@@ -395,7 +395,7 @@ export default function Page() {
                   {/* Radio Group */}
                   <div className="grid gap-2">
                     <div className="flex items-center space-x-4">
-                      <Label className="font-semibold text-sm">Gender</Label>
+                      <Label className="font-semibold text-sm font-aileron">Gender</Label>
                       <div className="inline-flex items-center space-x-2">
                         <input
                           type="radio"
@@ -408,7 +408,7 @@ export default function Page() {
                         />
                         <label
                           htmlFor="Male"
-                          className="text-sm font-semibold text-gray-700"
+                          className="text-sm font-semibold text-gray-700 font-aileron"
                         >
                           Male
                         </label>
@@ -426,7 +426,7 @@ export default function Page() {
                         />
                         <label
                           htmlFor="Female"
-                          className="text-sm font-semibold text-gray-700"
+                          className="text-sm font-semibold text-gray-700 font-aileron"
                         >
                           Female
                         </label>
@@ -444,7 +444,7 @@ export default function Page() {
                         />
                         <label
                           htmlFor="Other"
-                          className="text-sm font-semibold text-gray-700"
+                          className="text-sm font-semibold text-gray-700 font-aileron"
                         >
                           Other
                         </label>
@@ -460,17 +460,17 @@ export default function Page() {
                   <div className="grid gap-2">
                     <label
                       htmlFor="birthdate"
-                      className="text-sm flex items-center"
+                      className="text-sm flex items-center font-aileron font-semibold"
                     >
                       Birthdate
-                      <span className="ml-1 mt-1">
+                      <span className="ml-1 mt-1 font-aileron">
                         <TooltipProvider>
                           <Tooltip>
                             <TooltipTrigger>
                               <FcInfo />
                             </TooltipTrigger>
                             <TooltipContent>
-                              <p>Add to library</p>
+                              <p className="font-aileron font-normal">Add to library</p>
                             </TooltipContent>
                           </Tooltip>
                         </TooltipProvider>
@@ -494,7 +494,7 @@ export default function Page() {
 
                   <Button
                     type="button"
-                    className="w-full bg-[#0339D9] hover:bg-[#184EEB] font-bold"
+                    className="w-full bg-[#0339D9] hover:bg-[#184EEB] font-bold font-aileron tracking-widest"
                     onClick={handleContinue}
                   >
                     Continue
@@ -512,19 +512,19 @@ export default function Page() {
               <div className="flex flex-col gap-2 bg-white p-10 rounded-lg">
                 <div className="flex flex-col items-start gap-2 text-start">
                   <div>
-                    <p className="text-balance text-sm text-muted-foreground font-semibold ">
+                    <p className="text-balance text-sm text-muted-foreground font-semibold font-aileron">
                       Step {steps} of 3
                     </p>
-                    <h1 className="text-2xl font-bold">Create an account</h1>
+                    <h1 className="text-2xl font-bold font-aileron tracking-wide">Create an account</h1>
                   </div>
                 </div>
                 <div className="grid gap-6">
                   <div>
-                    <p className="text-balance text-sm text-muted-foreground font-semibold">
+                    <p className="text-balance text-sm text-muted-foreground font-semibold font-aileron">
                       Already have an account?
                       <Link
-                        href="/register"
-                        className="text-[#1d4ed8] ml-1 hover:text-[#1e40af]"
+                        href="/signin"
+                        className="text-[#1d4ed8] ml-1 hover:text-[#1e40af] font-aileron"
                       >
                         Sign in
                       </Link>
@@ -532,7 +532,7 @@ export default function Page() {
                   </div>
 
                   <div>
-                    <Label htmlFor="password">Password</Label>
+                    <Label htmlFor="password" className="font-aileron font-semibold">Password</Label>
                     <div className="relative flex items-center mt-0">
                       <Input
                         id="password"
@@ -558,7 +558,7 @@ export default function Page() {
                   </div>
 
                   <div>
-                    <Label htmlFor="password">Repeat password</Label>
+                    <Label htmlFor="password" className="font-aileron font-semibold">Repeat password</Label>
                     <div className="relative flex items-center mt-0">
                       <Input
                         id="confirmPassword"
@@ -583,10 +583,10 @@ export default function Page() {
                     </div>
                   </div>
 
-                  <p className="text-xs">
+                  <p className="text-xs font-aileron font-normal">
                     <Link
                       href="#"
-                      className=" text-[#1d4ed8]  text-xs font-semibold mr-1 underline-offset-4 hover:underline"
+                      className=" text-[#1d4ed8]  text-xs font-semibold font-aileron mr-1 underline-offset-4 hover:underline"
                     >
                       Techzone
                     </Link>
@@ -595,7 +595,7 @@ export default function Page() {
                     time, please refer to our
                     <Link
                       href="#"
-                      className=" text-[#1d4ed8]  text-xs font-semibold ml-1 underline-offset-4 hover:underline"
+                      className=" text-[#1d4ed8]  text-xs font-semibold font-aileron ml-1 underline-offset-4 hover:underline"
                     >
                       Privacy Policy.
                     </Link>
@@ -605,25 +605,25 @@ export default function Page() {
                     <Checkbox id="terms" />
                     <label
                       htmlFor="terms"
-                      className="text-xs font-semibold leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      className="text-xs font-semibold font-aileron leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                     >
                       Please contact me via email
                     </label>
                   </div>
 
-                  <p className="text-xs">
+                  <p className="text-xs font-normal font-aileron">
                     By clicking Create account, I agree that I have read and
                     accepted the
                     <Link
                       href="#"
-                      className=" text-[#1d4ed8]  text-xs font-semibold mr-1 ml-1 underline-offset-4 hover:underline"
+                      className=" text-[#1d4ed8]  text-xs font-semibold font-aileron mr-1 ml-1 underline-offset-4 hover:underline"
                     >
                       Terms of Service
                     </Link>
                     and
                     <Link
                       href="#"
-                      className=" text-[#1d4ed8]  text-xs font-semibold mr-1 ml-1 underline-offset-4 hover:underline"
+                      className=" text-[#1d4ed8]  text-xs font-semibold font-aileron mr-1 ml-1 underline-offset-4 hover:underline"
                     >
                       Privacy Policy
                     </Link>
@@ -631,7 +631,7 @@ export default function Page() {
 
                   <Button
                     type="button"
-                    className="w-full bg-[#0339D9] hover:bg-[#184EEB] font-bold"
+                    className="w-full bg-[#0339D9] hover:bg-[#184EEB] font-bold font-aileron tracking-widest"
                     onClick={handleSubmit}
                   >
                     Create an account

@@ -217,20 +217,19 @@ export function LoginForm({ className, ...props }) {
       onSubmit={handleFormSubmit}
     >
       <div className="flex flex-col items-start gap-2 text-start">
-        <h1 className="text-2xl font-bold">Sign in</h1>
-        <p className="text-balance text-sm text-muted-foreground font-semibold">
-          New user?
-          <Link
-            href="/signup"
-            className="text-[#1d4ed8] ml-1 hover:text-[#1e40af]"
-          >
+
+        <h1 className="text-2xl font-bold font-aileron tracking-wide">Sign in</h1>
+        <p className="text-balance text-sm text-muted-foreground font-semibold font-aileron">
+          New user? 
+          <Link href="/signup" className="text-[#1d4ed8] ml-1 hover:text-[#1e40af]">
+
             Create an account
           </Link>
         </p>
       </div>
       <div className="grid gap-6">
         <div className="grid gap-2">
-          <Label htmlFor="email">Email or username</Label>
+          <Label htmlFor="email" className="font-aileron font-semibold">Email or username</Label>
           <Input
             id="email"
             type="text"
@@ -241,10 +240,10 @@ export function LoginForm({ className, ...props }) {
         </div>
         <div className="grid gap-2 relative">
           <div className="flex items-center">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password" className="font-aileron font-semibold">Password</Label>
             <Link
               href="/recovery"
-              className=" text-[#1d4ed8] ml-auto text-sm underline-offset-4 hover:underline"
+              className="font-normal font-aileron text-[#1d4ed8] ml-auto text-sm underline-offset-4 hover:underline"
             >
               Forgot your password?
             </Link>
@@ -268,7 +267,7 @@ export function LoginForm({ className, ...props }) {
         </div>
         <Button
           type="submit"
-          className="w-full bg-[#0339D9] hover:bg-[#184EEB] font-bold"
+          className="w-full bg-[#0339D9] hover:bg-[#184EEB] font-bold font-aileron tracking-widest"
         >
           Sign in
         </Button>
@@ -287,7 +286,7 @@ export function LoginForm({ className, ...props }) {
         {/* handle google login */}
         <Button
           variant="outline"
-          className="w-full font-bold"
+          className="w-full font-bold font-aileron"
           onClick={handleGoogleLogin}
         >
           <FcGoogle />
@@ -297,7 +296,7 @@ export function LoginForm({ className, ...props }) {
         {/* handle facebook login */}
         <Button
           variant="outline"
-          className="w-full font-bold"
+          className="w-full font-bold font-aileron"
           onClick={handleFacebookLogin}
         >
           <FaFacebook className="text-[#0339D9]" />
