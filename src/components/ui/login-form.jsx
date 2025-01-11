@@ -11,8 +11,13 @@ import { HiEye, HiEyeOff } from "react-icons/hi";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa6";
 import axios from "axios";
-import { signIn } from "next-auth/react";
-import { getSession } from "next-auth/react";
+import { getAuth, FacebookAuthProvider } from "firebase/auth";
+import {
+  auth,
+  googleProvider,
+  signInWithPopup,
+  facebookProvider,
+} from "@/services/firebaseConfig";
 
 export function LoginForm({ className, ...props }) {
   const [showPassword, setShowPassword] = useState(false);
@@ -68,68 +73,35 @@ export function LoginForm({ className, ...props }) {
 
   const handleGoogleLogin = async () => {
     try {
-      console.log("Starting Google sign-in...");
+      const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
 
-      // Initiate Google sign-in
-      const result = await signIn("google", { redirect: false });
-      console.log("Sign-in result:", result);
+      // Get user details
+      const { email, displayName, photoURL } = user;
 
-      if (!result) {
-        setErrorHandler("No result returned from Google sign-in.");
-        return;
-      }
-
-      if (result.error) {
-        setErrorHandler(`Google sign-in error: ${result.error}`);
-        return;
-      }
-
-      console.log("Google sign-in was successful:", result);
-
-      // Wait for the session to be fully established
-      const session = await getSession();
-      console.log("Session after sign-in:", session);
-
-      if (!session || !session.user) {
-        console.error("Failed to retrieve user details from session.");
-        setErrorHandler(
-          "Unable to retrieve user information. Please try again."
-        );
-        return;
-      }
-
-      const { email, name, image } = session.user;
-      console.log("Retrieved user data:", { email, name, image });
-
-      console.log("Sending user data to backend...");
+      // Send user details to your backend
       const response = await axios.post("http://localhost:8003/graphql", {
-        query: `mutation GoogleSignIn($email: String!, $name: String!, $image: String) {
-    googleSignin(email: $email, name: $name, image: $image) {
-      message
-      token
-    }
-  }`,
-        variables: { email, name, image: image || null },
+        query: `
+        mutation GoogleSignIn($email: String!, $name: String!, $image: String) {
+          googleSignin(email: $email, name: $name, image: $image) {
+            message
+            token
+          }
+        }
+      `,
+        variables: { email, name: displayName, image: photoURL || null },
       });
-      console.log("Response from backend:", response.data);
 
-      const token = response.data?.data?.googleSignIn?.token;
-      if (!token) {
-        console.error("Token not received from backend.");
+      const token = response.data?.data?.googleSignin?.token;
+
+      if (token) {
+        document.cookie = `authToken=${token}; path=/; secure; samesite=strict`;
+        router.push("/");
+      } else {
         setErrorHandler("Sign-in failed. Please try again.");
-        return;
       }
-
-      console.log("Storing token in cookies...");
-      document.cookie = `authToken=${token}`;
-
-      console.log("Redirecting to '/'...");
-      router.push("/");
     } catch (error) {
-      console.error(
-        "An error occurred during Google sign-in:",
-        error?.message || error
-      );
+      console.error("Google Sign-in Error:", error);
       setErrorHandler("Something went wrong. Please try again.");
     }
   };
@@ -138,73 +110,57 @@ export function LoginForm({ className, ...props }) {
     try {
       console.log("Starting Facebook sign-in...");
 
-      // Initiate Facebook sign-in
-      const result = await signIn("facebook", { redirect: false });
-      console.log("Sign-in result:", result); // Debugging
+      // Initialize Firebase Auth and Facebook Auth Provider
+      const auth = getAuth();
+      const provider = new FacebookAuthProvider();
 
-      if (!result) {
-        console.error("No result returned from Facebook sign-in.");
-        setErrorHandler("Sign-in failed. No response received.");
-        return;
-      }
+      // Sign in with a popup
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
 
-      if (result.error) {
-        console.error(`Facebook sign-in error: ${result.error}`);
-        const errorMessage =
-          result.error === "OAuthAccountNotLinked"
-            ? "This Facebook account is not linked to an existing account. Please sign up first."
-            : "Facebook sign-in failed. Please try again.";
-        setErrorHandler(errorMessage);
-        return;
-      }
+      console.log("Facebook sign-in successful:", user);
 
-      console.log("Facebook sign-in was successful:", result);
+      // Extract user details
+      const { email, displayName, photoURL } = user;
 
-      // Wait for the session to be fully established
-      const session = await getSession();
-      console.log("Session after sign-in:", session); // Debugging session
+      console.log("Retrieved user data:", {
+        email,
+        name: displayName,
+        image: photoURL,
+      });
 
-      if (!session || !session.user) {
-        console.error("Failed to retrieve user details from session.");
-        setErrorHandler(
-          "Unable to retrieve user information. Please try again."
-        );
-        return;
-      }
-
-      const { email, name, image } = session.user;
-
-      // Proceed to send the session data to the backend
-      console.log("Retrieved user data:", { email, name, image });
-
+      // Send user data to the backend
       console.log("Sending user data to backend...");
       const response = await axios.post("http://localhost:8003/graphql", {
-        query: `mutation FacebookSignIn($email: String!, $name: String!, $image: String) {
+        query: `
+      mutation FacebookSignIn($email: String!, $name: String!, $image: String) {
         facebookSignin(email: $email, name: $name, image: $image) {
           message
           token
         }
-      }`,
-        variables: { email, name, image: image || null },
+      }
+      `,
+        variables: { email, name: displayName, image: photoURL || null },
       });
+
       console.log("Response from backend:", response.data);
 
+      // Extract token from the response
       const token = response.data?.data?.facebookSignIn?.token;
-      if (!token) {
+
+      if (token) {
+        // Store token in cookies
+        document.cookie = `authToken=${token}; path=/; secure; samesite=strict`;
+        console.log("Token stored successfully. Redirecting to '/'...");
+        router.push("/");
+      } else {
         console.error("Token not received from backend.");
         setErrorHandler("Sign-in failed. Please try again.");
-        return;
       }
-
-      console.log("Storing token in cookies...");
-      document.cookie = `authToken=${token}`;
-
-      console.log("Redirecting to '/'...");
-      router.push("/");
     } catch (error) {
       console.error(
         "An error occurred during Facebook sign-in:",
-        error?.message || error
+        error.message || error
       );
       setErrorHandler("Something went wrong. Please try again.");
     }

@@ -1,43 +1,45 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import FacebookProvider from "next-auth/providers/facebook";
 
 export default NextAuth({
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    }),
-    FacebookProvider({
-      clientId: process.env.FACEBOOK_CLIENT_ID,
-      clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
+      authorization: {
+        params: {
+          prompt: "consent",
+          access_type: "offline",
+          response_type: "code",
+        },
+      },
     }),
   ],
   callbacks: {
-    async signIn({ account, profile }) {
-      if (account.provider === "google") {
-        return profile.email_verified && profile.email.endsWith("@gmail.com");
-      } else if (account.provider === "facebook") {
-        return true;
+    async jwt({ token, account, user, session }) {
+      console.log("JWT callback start:", { token, account, user, session });
+
+      if (session) {
+        token.user = session.user;
       }
-    },
-    async jwt({ token, account, user }) {
-      console.log("JWT callback:", { token, account, user });
-      if (account) {
-        token.accessToken = account.access_token;
-      }
+
+      console.log("JWT callback end:", { token });
       return token;
     },
 
     async session({ session, token }) {
       console.log("Session callback:", { session, token });
       session.accessToken = token.accessToken;
+      session.user = token.user; // Pass user details
       return session;
     },
   },
-  events: {
-    error(message) {
-      console.error("Error during authentication:", message);
-    },
+  session: {
+    strategy: "jwt",
+    maxAge: 1 * 24 * 60 * 60, // 1 day
   },
+  pages: {
+    signIn: "/signin",
+  },
+  debug: true, // Enable debugging
 });
