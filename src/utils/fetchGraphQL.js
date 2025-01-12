@@ -3,7 +3,7 @@ import axios from "axios";
 const fetchGraphQL = async (query, variables = {}) => {
   try {
     const response = await axios.post(
-      `http://localhost:8003/graphql`,
+      `http://localhost:8004/graphql`,
       {
         query,
         variables,

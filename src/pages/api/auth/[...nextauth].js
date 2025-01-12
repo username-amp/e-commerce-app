@@ -30,7 +30,7 @@ export default NextAuth({
     async session({ session, token }) {
       console.log("Session callback:", { session, token });
       session.accessToken = token.accessToken;
-      session.user = token.user; // Pass user details
+      session.user = token.user;
       return session;
     },
   },
@@ -41,5 +41,5 @@ export default NextAuth({
   pages: {
     signIn: "/signin",
   },
-  debug: true, // Enable debugging
+  debug: true,
 });

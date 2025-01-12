@@ -18,6 +18,10 @@ import {
   signInWithPopup,
   facebookProvider,
 } from "@/services/firebaseConfig";
+import fetchGraphQL from "@/utils/fetchGraphQL";
+import { SIGNIN_MUTATION } from "@/graphql/mutations/signIn";
+import { GOOGLE_SIGNIN_MUTATION } from "@/graphql/mutations/googleSignIn";
+import { FACEBOOK_SIGNIN_MUTATION } from "@/graphql/mutations/facebookSignin";
 
 export function LoginForm({ className, ...props }) {
   const [showPassword, setShowPassword] = useState(false);
@@ -34,39 +38,31 @@ export function LoginForm({ className, ...props }) {
     e.preventDefault();
 
     try {
-      const response = await axios.post("http://localhost:8003/graphql", {
-        query: `
-        mutation Signin($emailOrUsername: String!, $password: String!) {
-          signin(emailOrUsername: $emailOrUsername, password: $password) {
-            message
-            token
-          }
-        }
-      `,
-        variables: {
-          emailOrUsername,
-          password,
-        },
+      const response = await fetchGraphQL(SIGNIN_MUTATION, {
+        emailOrUsername,
+        password,
       });
 
-      if (response.data?.data?.signin?.token) {
-        const { token, message } = response.data.data.signin;
+      if (response.data?.signin?.token) {
+        const { token, message } = response.data.signin;
 
-        // Store token in cookies
         document.cookie = `authToken=${token}; path=/; secure; samesite=strict`;
 
-        // Redirect to the homepage
         router.push("/");
       } else {
-        setErrorHandler("Invalid credentials"); // Set error message
+        setErrorHandler("Invalid credentials");
       }
     } catch (error) {
       console.error("Error occurred during sign-in:", error);
+
       if (error.response) {
         console.error("Error response data:", error.response.data);
         console.error("Error response status:", error.response.status);
         console.error("Error response headers:", error.response.headers);
+
+        console.error("Error without response:", error.message);
       }
+
       setErrorHandler("Something went wrong. Please try again.");
     }
   };
@@ -76,23 +72,15 @@ export function LoginForm({ className, ...props }) {
       const result = await signInWithPopup(auth, googleProvider);
       const user = result.user;
 
-      // Get user details
       const { email, displayName, photoURL } = user;
 
-      // Send user details to your backend
-      const response = await axios.post("http://localhost:8003/graphql", {
-        query: `
-        mutation GoogleSignIn($email: String!, $name: String!, $image: String) {
-          googleSignin(email: $email, name: $name, image: $image) {
-            message
-            token
-          }
-        }
-      `,
-        variables: { email, name: displayName, image: photoURL || null },
+      const response = await fetchGraphQL(GOOGLE_SIGNIN_MUTATION, {
+        email,
+        name: displayName,
+        image: photoURL || null,
       });
 
-      const token = response.data?.data?.googleSignin?.token;
+      const token = response.data?.googleSignin?.token;
 
       if (token) {
         document.cookie = `authToken=${token}; path=/; secure; samesite=strict`;
@@ -108,50 +96,25 @@ export function LoginForm({ className, ...props }) {
 
   const handleFacebookLogin = async () => {
     try {
-      console.log("Starting Facebook sign-in...");
-
-      // Initialize Firebase Auth and Facebook Auth Provider
       const auth = getAuth();
       const provider = new FacebookAuthProvider();
 
-      // Sign in with a popup
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
 
-      console.log("Facebook sign-in successful:", user);
-
-      // Extract user details
       const { email, displayName, photoURL } = user;
 
-      console.log("Retrieved user data:", {
+      const response = await fetchGraphQL(FACEBOOK_SIGNIN_MUTATION, {
         email,
         name: displayName,
-        image: photoURL,
+        image: photoURL || null,
       });
 
-      // Send user data to the backend
-      console.log("Sending user data to backend...");
-      const response = await axios.post("http://localhost:8003/graphql", {
-        query: `
-      mutation FacebookSignIn($email: String!, $name: String!, $image: String) {
-        facebookSignin(email: $email, name: $name, image: $image) {
-          message
-          token
-        }
-      }
-      `,
-        variables: { email, name: displayName, image: photoURL || null },
-      });
-
-      console.log("Response from backend:", response.data);
-
-      // Extract token from the response
       const token = response.data?.data?.facebookSignIn?.token;
 
       if (token) {
-        // Store token in cookies
         document.cookie = `authToken=${token}; path=/; secure; samesite=strict`;
-        console.log("Token stored successfully. Redirecting to '/'...");
+
         router.push("/");
       } else {
         console.error("Token not received from backend.");
@@ -173,19 +136,24 @@ export function LoginForm({ className, ...props }) {
       onSubmit={handleFormSubmit}
     >
       <div className="flex flex-col items-start gap-2 text-start">
-
-        <h1 className="text-2xl font-bold font-aileron tracking-wide">Sign in</h1>
+        <h1 className="text-2xl font-bold font-aileron tracking-wide">
+          Sign in
+        </h1>
         <p className="text-balance text-sm text-muted-foreground font-semibold font-aileron">
-          New user? 
-          <Link href="/signup" className="text-[#1d4ed8] ml-1 hover:text-[#1e40af]">
-
+          New user?
+          <Link
+            href="/signup"
+            className="text-[#1d4ed8] ml-1 hover:text-[#1e40af]"
+          >
             Create an account
           </Link>
         </p>
       </div>
       <div className="grid gap-6">
         <div className="grid gap-2">
-          <Label htmlFor="email" className="font-aileron font-semibold">Email or username</Label>
+          <Label htmlFor="email" className="font-aileron font-semibold">
+            Email or username
+          </Label>
           <Input
             id="email"
             type="text"
@@ -196,7 +164,9 @@ export function LoginForm({ className, ...props }) {
         </div>
         <div className="grid gap-2 relative">
           <div className="flex items-center">
-            <Label htmlFor="password" className="font-aileron font-semibold">Password</Label>
+            <Label htmlFor="password" className="font-aileron font-semibold">
+              Password
+            </Label>
             <Link
               href="/recovery"
               className="font-normal font-aileron text-[#1d4ed8] ml-auto text-sm underline-offset-4 hover:underline"
