@@ -10,7 +10,6 @@ import { Label } from "@/components/ui/label";
 import { HiEye, HiEyeOff } from "react-icons/hi";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa6";
-import axios from "axios";
 import { getAuth, FacebookAuthProvider } from "firebase/auth";
 import {
   auth,
