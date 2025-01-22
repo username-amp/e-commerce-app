@@ -1,4 +1,4 @@
-"use client";  // This marks the file as a client-side component
+"use client";  
 
 import { Logo } from "@/components/ui/header";
 import { useRef } from "react";
@@ -31,23 +31,66 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarGroup,
-  SidebarHeader,
-} from "@/components/ui/sidebar";
+
 import Image from 'next/image'; 
+
 export default function Page() {
   const plugin = useRef(Autoplay({ delay: 2000, stopOnInteraction: true }));
 
-
   const imagePaths = [
-    '/banner1.jpg',
-    '/banner2.jpg',
-    '/banner3.jpg'
-  ]
+    '/banner3.png',
+    '/banner4.png',
+    '/banner5.png'
+  ];
+
+  const categories = [
+    {
+      imagePath : '',
+      label: 'Mobiles'
+    },
+     {
+      imagePath : '',
+      label: 'Laptops'
+    },
+     {
+      imagePath : '',
+      label: 'Tablets'
+    },
+     {
+      imagePath : '',
+      label: 'Desktops'
+    },
+    {
+      imagePath : '',
+      label: 'Controllers'
+    },
+    {
+      imagePath : '',
+      label: 'GPU'
+    },
+    {
+      imagePath : '',
+      label: 'Processors'
+    },
+    {
+      imagePath : '',
+      label: 'Accesories'
+    },
+    {
+      imagePath : '',
+      label: 'SmartTV'
+    },
+
+    {
+      imagePath : '',
+      label: 'Playstation'
+    },
+    {
+      imagePath : '',
+      label: 'Monitors'
+    },
+    
+  ];
   
   return (
     <div>
@@ -88,7 +131,7 @@ export default function Page() {
           </Link>
         </div>
       </div>
-
+      {/* Sub Header */}
       <div className="flex justify-center w-full h-20 bg-[#37A6D8]">
         <div className="flex items-center justify-evenly w-full h-full mr-80 ml-40 gap-10">
           <Logo />
@@ -106,48 +149,90 @@ export default function Page() {
         </div>
       </div>
 
-      {/* Main Content with Carousel */}
-      <div className="flex justify-center items-center w-screen ">
-        <div className="grid grid-cols-12 gap-1 w-full">
-          <div className="col-span-10 row-span-2 bg-blue-300 w-full">
-            <Carousel
-              plugins={[plugin.current]}
-              className="w-full"
-              onMouseEnter={plugin.current.stop}
-              onMouseLeave={plugin.current.reset}
-            >
-              <CarouselContent>
-              {imagePaths.map((imagePath, index) => (
-                <CarouselItem key={index}>
-                  <div className="p-1 w-full">
-                    <Card>
-                      <CardContent className="flex aspect-video items-center justify-center w-fullh-auto relative ">
-                        <Image
-                          src={imagePath} 
-                          alt={`Carousel Image ${index + 1}`} 
-                          layout="fill" // Make the image fill the card's area
-                          objectFit="cover" // Preserve aspect ratio and cover the entire area
-                          className="rounded-md" // Optional: add rounded corners to the image
-                        />
-                      </CardContent>
-                    </Card>
-                  </div>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-              <CarouselPrevious />
-              <CarouselNext />
-            </Carousel>
-          </div>
-
-          <div className="col-span-1 row-span-1 bg-black text-white p-4 flex items-center justify-center">
-            fwafw
-          </div>
-           <div className="col-span-1 row-span-1 bg-black text-white p-4 flex items-center justify-center">
-            fwafw
-          </div>
-        </div>
+    
+<div className="flex justify-center items-center w-full h-sceen mt-5 flex-col ">
+  {/* Banner */}
+  <div className="grid grid-cols-6   gap-1 w-full max-w-screen-xl justify-center mx-auto">
+    <div className="col-span-4 row-span-2  w-full h-full relative">
+      <Carousel
+        plugins={[plugin.current]}
+      className="w-full "
+      onMouseEnter={plugin.current.stop}
+      onMouseLeave={plugin.current.reset}
+      >
+        <CarouselContent>
+  {imagePaths.map((imagePath, index) => (
+    <CarouselItem key={index} className="relative">
+      {/* Carousel Item Content */}
+      <div className=" w-full  relative">
+        <Image
+          src={imagePath}
+          alt={`Carousel Image ${index + 1}`}
+          objectFit="cover" 
+          height={500}
+          width={2000}
+        />
       </div>
+
+     
+    </CarouselItem>
+  ))}
+</CarouselContent>
+      <div className="absolute top-1/2 left-16 transform -translate-y-1/2 z-10">
+        <CarouselPrevious className="bg-white text-black rounded-full p-2 shadow-lg" />
+      </div>
+
+      <div className="absolute top-1/2 right-16 transform -translate-y-1/2 z-10">
+        <CarouselNext className="bg-white text-black rounded-full p-2 shadow-lg" />
+      </div>
+      </Carousel>
+    </div>
+
+    <div className="col-span-2 row-span-1 h-full ">
+      <div className=" w-full h-full  relative">
+        <Image
+          src={'/banner1.png'}
+          alt={`banner Image`}
+          objectFit="cover" 
+          layout="fill"
+        />
+      </div>
+    </div>
+    <div className="col-span-2 row-span-1">
+      <div className=" w-full h-full  relative">
+        <Image
+          src={'/banner2.png'}
+          alt={`banner Image`}
+          objectFit="cover" 
+          layout="fill"
+        />
+      </div>
+    </div>
+  </div>
+
+  {/* Categories */}
+  <div className="flex w-full max-w-screen-xl flex-col">
+  <h2 className="font-medium text-muted-foreground text-3xl pt-5 pb-3">Categories</h2>
+  <div className="flex w-full flex-row gap-3 overflow-x-auto">
+    {/* Categories Card */}
+    {categories.map((category, index) => {
+      return (
+        <Card key={index} className="w-28 h-28 bg-white text-wrap">
+          <CardContent className="p-2 flex flex-col justify-center items-center">
+            <div className="bg-black">
+              {/*  image */}
+            </div>
+            <h1 className="text-black text-sm font-semibold text-center truncate break-words">
+              {category.label}
+            </h1>
+          </CardContent>
+        </Card>
+      );
+    })}
+  </div>
+</div>
+</div>
+
     </div>
   );
 }
