@@ -18,8 +18,8 @@ export default function ProductCard({ imageUrl, name, price, sold, ratings }) {
   }
 
   return (
-    <div className="w-56 h-auto mb-2">
-      <Card className="flex flex-col h-full rounded-none">
+  <div className="w-56 h-auto mb-2 ">
+      <Card className="flex flex-col h-auto rounded-none duration-300 ease-out border shadow-md hover:translate-y-[-5px] cursor-pointer">
         <CardContent className="relative flex-1 p-0">
           {/* Product image */}
           <div className="h-40 relative">
