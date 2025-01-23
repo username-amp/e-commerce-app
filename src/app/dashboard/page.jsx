@@ -1,10 +1,6 @@
 "use client";  
 
 import { Logo } from "@/components/ui/header";
-import { useRef } from "react";
-import Autoplay from "embla-carousel-autoplay";
-
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FaSearch } from "react-icons/fa";
@@ -16,14 +12,6 @@ import { TbSwitchHorizontal } from "react-icons/tb";
 import { IoIosHelpCircleOutline } from "react-icons/io";
 
 import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
-
-import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -31,66 +19,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
-import Image from 'next/image'; 
-
+import DashboardBanner from "@/components/ui/dashboard-banner";
+import ProductCard from "@/components/ui/product-card";
+import Categories from "@/components/ui/categories";
 export default function Page() {
-  const plugin = useRef(Autoplay({ delay: 2000, stopOnInteraction: true }));
+  
 
-  const imagePaths = [
-    '/banner3.png',
-    '/banner4.png',
-    '/banner5.png'
-  ];
-
-  const categories = [
-    {
-      imagePath : '',
-      label: 'Mobiles'
-    },
-     {
-      imagePath : '',
-      label: 'Laptops'
-    },
-     {
-      imagePath : '',
-      label: 'Tablets'
-    },
-     {
-      imagePath : '',
-      label: 'Desktops'
-    },
-    {
-      imagePath : '',
-      label: 'Controllers'
-    },
-    {
-      imagePath : '',
-      label: 'GPU'
-    },
-    {
-      imagePath : '',
-      label: 'Processors'
-    },
-    {
-      imagePath : '',
-      label: 'Accesories'
-    },
-    {
-      imagePath : '',
-      label: 'SmartTV'
-    },
-
-    {
-      imagePath : '',
-      label: 'Playstation'
-    },
-    {
-      imagePath : '',
-      label: 'Monitors'
-    },
-    
-  ];
   
   return (
     <div>
@@ -120,10 +54,12 @@ export default function Page() {
           </DropdownMenu>
         </div>
         <div className="flex items-center gap-2">
+         {/* Link to seller mode */}
           <Link href="#" className="text-white font-medium text-xs flex items-center hover:text-emerald-300 ">
             <TbSwitchHorizontal size={18} className="mr-1" />
             <span>Switch to seller</span>
           </Link>
+          {/* Link to help */}
           <Separator orientation="vertical" className="h-5 bg-white" />
           <Link href="#" className="text-white font-medium text-xs flex items-center hover:text-gray-200">
             <IoIosHelpCircleOutline size={18} className="mr-1" />
@@ -136,6 +72,7 @@ export default function Page() {
         <div className="flex items-center justify-evenly w-full h-full mr-80 ml-40 gap-10">
           <Logo />
 
+          {/* Search bar */}
           <div className="flex flex-1 items-center">
             <Input type="text" placeholder="Search..." className="rounded-none bg-white" />
             <Button type="submit" className="rounded-none bg-[#2B8FD8] hover:bg-[#37A6D8]">
@@ -143,6 +80,7 @@ export default function Page() {
             </Button>
           </div>
 
+          {/* Cart */}
           <div>
             <Link href={"#"}><MdShoppingCart size={30} color="white" /></Link>
           </div>
@@ -152,85 +90,30 @@ export default function Page() {
     
 <div className="flex justify-center items-center w-full h-sceen mt-5 flex-col ">
   {/* Banner */}
-  <div className="grid grid-cols-6   gap-1 w-full max-w-screen-xl justify-center mx-auto">
-    <div className="col-span-4 row-span-2  w-full h-full relative">
-      <Carousel
-        plugins={[plugin.current]}
-      className="w-full "
-      onMouseEnter={plugin.current.stop}
-      onMouseLeave={plugin.current.reset}
-      >
-        <CarouselContent>
-  {imagePaths.map((imagePath, index) => (
-    <CarouselItem key={index} className="relative">
-      {/* Carousel Item Content */}
-      <div className=" w-full  relative">
-        <Image
-          src={imagePath}
-          alt={`Carousel Image ${index + 1}`}
-          objectFit="cover" 
-          height={500}
-          width={2000}
-        />
-      </div>
-
-     
-    </CarouselItem>
-  ))}
-</CarouselContent>
-      <div className="absolute top-1/2 left-16 transform -translate-y-1/2 z-10">
-        <CarouselPrevious className="bg-white text-black rounded-full p-2 shadow-lg" />
-      </div>
-
-      <div className="absolute top-1/2 right-16 transform -translate-y-1/2 z-10">
-        <CarouselNext className="bg-white text-black rounded-full p-2 shadow-lg" />
-      </div>
-      </Carousel>
-    </div>
-
-    <div className="col-span-2 row-span-1 h-full ">
-      <div className=" w-full h-full  relative">
-        <Image
-          src={'/banner1.png'}
-          alt={`banner Image`}
-          objectFit="cover" 
-          layout="fill"
-        />
-      </div>
-    </div>
-    <div className="col-span-2 row-span-1">
-      <div className=" w-full h-full  relative">
-        <Image
-          src={'/banner2.png'}
-          alt={`banner Image`}
-          objectFit="cover" 
-          layout="fill"
-        />
-      </div>
-    </div>
-  </div>
+  <DashboardBanner />
 
   {/* Categories */}
+  <Categories />
+
   <div className="flex w-full max-w-screen-xl flex-col">
-  <h2 className="font-medium text-muted-foreground text-3xl pt-5 pb-3">Categories</h2>
-  <div className="flex w-full flex-row gap-3 overflow-x-auto">
-    {/* Categories Card */}
-    {categories.map((category, index) => {
-      return (
-        <Card key={index} className="w-28 h-28 bg-white text-wrap">
-          <CardContent className="p-2 flex flex-col justify-center items-center">
-            <div className="bg-black">
-              {/*  image */}
-            </div>
-            <h1 className="text-black text-sm font-semibold text-center truncate break-words">
-              {category.label}
-            </h1>
-          </CardContent>
-        </Card>
-      );
-    })}
+  <h2 className="font-medium text-[#37A6D8] text-3xl text-center mt-20 pb-3">DAILY DISCOVERY</h2>
+  <Separator orientation="horizontal" className="w-full h-1 bg-[#2B8FD8] rounded-sm" />
+
+  {/* Product cards */}
+  <div className="flex flex-row flex-wrap justify-evenly h-screen  mt-5">
+    {Array.from({ length: 20 }).map((_, index) => (
+      <ProductCard
+        key={index}
+        imageUrl="/productImg.png"  // Use a placeholder image or dynamic URL
+        name={`Product ${index + 1}`}
+        price={(index + 1) * 10}  // Example price, adjust based on your data
+        solds={`${(index + 1) * 100} sold`} // Example sold count
+        ratings={(index + 1) % 5}  // Example ratings, adjust based on your data
+      />
+    ))}
   </div>
 </div>
+
 </div>
 
     </div>
