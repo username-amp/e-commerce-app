@@ -10,6 +10,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 import { TbSwitchHorizontal } from "react-icons/tb";
 import { IoIosHelpCircleOutline } from "react-icons/io";
+import { RiVisaFill } from "react-icons/ri";
+import { LiaCcMastercard } from "react-icons/lia";
+import { SiAmericanexpress } from "react-icons/si";
+import { FaCcPaypal } from "react-icons/fa6";
 
 import {
   DropdownMenu,
@@ -111,11 +115,15 @@ export default function Page() {
           </div>
         </div>
 
+        <div className="w-full flex justify-center">
+          <Button className="w-72 p-5 bg-[#37A6D8] text-white font-bold tracking-wider hover:bg-[#35A6D8] mt-5"> See more </Button>
+        </div>
+        
         
       </div>
 
       {/* Footer */}
-      <footer className="bg-gray-800 text-white py-10 mt-5">
+      <footer className="bg-[#37A6D8] text-white py-10 mt-5">
         <div className="container mx-auto flex flex-wrap justify-between">
           <div className="footer-section">
             <h4 className="font-bold mb-2">Quick Links</h4>
@@ -154,11 +162,7 @@ export default function Page() {
             </ul>
           </div>
 
-          <div className="footer-section">
-            <h4 className="font-bold mb-2">Subscribe to Our Newsletter</h4>
-            <input type="email" placeholder="Enter your email" className="p-2 rounded" />
-            <button className="mt-2 bg-blue-600 hover:bg-blue-500 text-white py-1 px-3 rounded">Subscribe</button>
-          </div>
+
 
           <div className="footer-section">
             <h4 className="font-bold mb-2">Contact Information</h4>
@@ -167,9 +171,14 @@ export default function Page() {
             <p>Address: 123 Tech Street, Silicon Valley, CA, 94043, USA</p>
           </div>
 
-          <div className="footer-section">
+          <div className="footer-section  w-72">
             <h4 className="font-bold mb-2">Payment Methods</h4>
-            <p>[Visa] [MasterCard] [American Express] [PayPal] [Discover]</p>
+            <div className="flex justify-evenly items-center flex-wrap">
+              <p><RiVisaFill size={100}/></p>
+              <p><LiaCcMastercard size={100}/></p>
+              <p><SiAmericanexpress size={100}/></p>
+              <p><FaCcPaypal size={100}/></p>
+            </div>
           </div>
         </div>
         <div className="text-center mt-5">
