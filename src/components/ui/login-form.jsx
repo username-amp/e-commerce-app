@@ -82,8 +82,8 @@ export function LoginForm({ className, ...props }) {
       const token = response.data?.googleSignin?.token;
 
       if (token) {
-        document.cookie = `authToken=${token}; path=/; secure; samesite=strict`;
-        router.push("/");
+        document.cookie = `authToken=${token}; path=/dashboard; secure; samesite=strict`;
+        router.push("/dashboard");
       } else {
         setErrorHandler("Sign-in failed. Please try again.");
       }
