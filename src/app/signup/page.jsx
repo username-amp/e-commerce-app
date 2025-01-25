@@ -177,13 +177,10 @@ export default function Page() {
           backgroundPosition: "center",
         }}
       >
-        <div className="flex flex-col gap-4 p-6 md:p-10 ">
-          <div className="flex flex-1 items-center justify-center">
-            <div className="w-full max-w-xs">
-              <LogoHeader />
-            </div>
-          </div>
+        <div className=" flex-1 items-center justify-center hidden  sm:hidden  md:hidden lg:flex">
+          <LogoHeader />      
         </div>
+
 
         <div className="flex flex-1 items-center justify-center sm:h-full ">
           {showStep1 && (

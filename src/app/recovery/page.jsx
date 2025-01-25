@@ -58,7 +58,7 @@ const page = () => {
   const handleBackToStep1 = () => {
     setSteps(1);
   };
-
+  
   // Timer logic
   useEffect(() => {
     let countdown;
