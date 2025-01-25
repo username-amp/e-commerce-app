@@ -112,9 +112,9 @@ export function LoginForm({ className, ...props }) {
       const token = response.data?.data?.facebookSignIn?.token;
 
       if (token) {
-        document.cookie = `authToken=${token}; path=/; secure; samesite=strict`;
+        document.cookie = `authToken=${token}; path=/dashboard; secure; samesite=strict`;
 
-        router.push("/");
+        router.push("/dashboard");
       } else {
         console.error("Token not received from backend.");
         setErrorHandler("Sign-in failed. Please try again.");
