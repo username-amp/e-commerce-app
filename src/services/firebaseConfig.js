@@ -7,7 +7,7 @@ import {
 } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyD3c6PZ-kTRXmQwF1bM3UIk5JUwR-zE2vg",
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
   authDomain: "fir-integration-3613c.firebaseapp.com",
   databaseUrl: "https://fir-integration-3613c-default-rtdb.firebaseio.com",
   projectId: "fir-integration-3613c",
