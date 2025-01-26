@@ -8,7 +8,9 @@ import { Label } from "@/components/ui/label";
 import { FcInfo } from "react-icons/fc";
 import { HiEye, HiEyeOff } from "react-icons/hi";
 import { Checkbox } from "@/components/ui/checkbox";
-import axios from "axios";
+import { useRouter } from "next/navigation";
+import fetchGraphQL from "@/utils/fetchGraphQL";
+import { SIGNUP_MUTATION } from "@/graphql/mutations/signUp";
 import {
   Tooltip,
   TooltipContent,
@@ -54,6 +56,8 @@ export default function Page() {
     address: "",
   });
 
+  const router = useRouter();
+
   // toggle show password in first input
   const toggleFirstPassword = () => {
     setFirstPassShow((prev) => !prev);
@@ -97,94 +101,40 @@ export default function Page() {
     try {
       setSteps(1);
 
-      // Define GraphQL mutation
-      const query = `gend
-      mutation Signup(
-        $name: String!, 
-        $username: String!, 
-        $email: String!, 
-        $password: String!, 
-        $confirmPassword: String!,
-        $role: String!,
-        $address: String,
-        $phoneNumber: String,
-        $gender: String!,
-        $birthdate: String!
-      ) {
-        signup(
-          name: $name,
-          username: $username,
-          email: $email,
-          password: $password,
-          confirmPassword: $confirmPassword,
-          role: $role,
-          address: $address,
-          phoneNumber: $phoneNumber,
-          gender: $gender,
-          birthdate: $birthdate
-        ) {
-          message
-          token
-        }
-      }
-    `;
-
-      // Prepare variables
       const variables = {
-        name: name,
-        username: username,
-        email: email,
-        password: password,
+        name,
+        username,
+        email,
+        password,
         confirmPassword: cpass,
         role: "customer",
         address: address || null,
-        phoneNumber: phone ,
-        gender: gender,
-        birthdate: birthdate,
+        phoneNumber: phone || null,
+        gender,
+        birthdate,
       };
 
-      // Make the API call
-      const response = await axios.post(
-        "http://localhost:8003/graphql",
-        {
-          query,
-          variables,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetchGraphQL(SIGNUP_MUTATION, variables);
 
-      // Handle response
-      const data = response?.data?.data?.signup;
-      if (data) {
-        setSteps(2); // Update UI after successful signup
+      const data = response.data?.signup;
+
+      if (data?.token) {
+        document.cookie = `authToken=${data.token}; path=/; secure; samesite=strict`;
+        setSteps(2);
+        router.push("/");
       } else {
-        console.error("Error in response data:", response?.data);
-        setErrors((prev) => ({
-          ...prev,
-          signup: "Error creating an account",
-        }));
+        setErrorHandler(
+          "Signup failed. Please check your details and try again."
+        );
       }
     } catch (error) {
-      console.error(
-        "Error creating an account:",
-        error.response?.data?.errors || error.message
-      );
-      // Log the specific error
-      if (error.response?.data?.errors) {
-        error.response.data.errors.forEach((err, index) => {
-          console.error(`Error ${index + 1}: ${err.message}`);
-        });
+      console.error("Error during signup:", error);
+
+      if (error.response) {
+        console.error("Error response data:", error.response.data);
       }
-      // Set the specific error message in the errors state
-      setErrors((prev) => ({
-        ...prev,
-        signup:
-          error.response?.data?.errors?.[0]?.message || "Something went wrong",
-      }));
+
+      setErrorHandler("Something went wrong. Please try again later.");
     }
   };
 
@@ -241,7 +191,9 @@ export default function Page() {
                     <p className="text-balance text-sm text-muted-foreground font-semibold font-aileron ">
                       Step {steps} of 3
                     </p>
-                    <h1 className="text-2xl font-bold font-aileron tracking-wide">Create an account</h1>
+                    <h1 className="text-2xl font-bold font-aileron tracking-wide">
+                      Create an account
+                    </h1>
                   </div>
                   <div className="flex gap-2">
                     {/* handle google login */}
@@ -287,7 +239,12 @@ export default function Page() {
                   </div>
 
                   <div className="grid gap-2">
-                    <Label htmlFor="email" className="font-aileron font-semibold">Email address</Label>
+                    <Label
+                      htmlFor="email"
+                      className="font-aileron font-semibold"
+                    >
+                      Email address
+                    </Label>
                     <Input
                       id="email"
                       type="email"
@@ -323,7 +280,9 @@ export default function Page() {
                     <p className="text-balance text-sm text-muted-foreground font-semibold font-aileron">
                       Step {steps} of 3
                     </p>
-                    <h1 className="text-2xl font-bold font-aileron tracking-wide">Create an account</h1>
+                    <h1 className="text-2xl font-bold font-aileron tracking-wide">
+                      Create an account
+                    </h1>
                   </div>
                 </div>
                 <div className="grid gap-6">
@@ -339,7 +298,12 @@ export default function Page() {
                     </p>
                   </div>
                   <div className="grid gap-2">
-                    <Label htmlFor="name" className="font-aileron font-semibold">Full name</Label>
+                    <Label
+                      htmlFor="name"
+                      className="font-aileron font-semibold"
+                    >
+                      Full name
+                    </Label>
                     <Input
                       id="name"
                       type="text"
@@ -356,7 +320,12 @@ export default function Page() {
                   </div>
 
                   <div className="grid gap-2">
-                    <Label htmlFor="username" className="font-aileron font-semibold">Username</Label>
+                    <Label
+                      htmlFor="username"
+                      className="font-aileron font-semibold"
+                    >
+                      Username
+                    </Label>
                     <Input
                       id="username"
                       type="text"
@@ -373,7 +342,12 @@ export default function Page() {
                   </div>
 
                   <div className="grid gap-2">
-                    <Label htmlFor="phone" className="font-aileron font-semibold">Phone number</Label>
+                    <Label
+                      htmlFor="phone"
+                      className="font-aileron font-semibold"
+                    >
+                      Phone number
+                    </Label>
                     <Input
                       id="phone"
                       type="text"
@@ -392,7 +366,9 @@ export default function Page() {
                   {/* Radio Group */}
                   <div className="grid gap-2">
                     <div className="flex items-center space-x-4">
-                      <Label className="font-semibold text-sm font-aileron">Gender</Label>
+                      <Label className="font-semibold text-sm font-aileron">
+                        Gender
+                      </Label>
                       <div className="inline-flex items-center space-x-2">
                         <input
                           type="radio"
@@ -467,7 +443,9 @@ export default function Page() {
                               <FcInfo />
                             </TooltipTrigger>
                             <TooltipContent>
-                              <p className="font-aileron font-normal">Add to library</p>
+                              <p className="font-aileron font-normal">
+                                Add to library
+                              </p>
                             </TooltipContent>
                           </Tooltip>
                         </TooltipProvider>
@@ -512,7 +490,9 @@ export default function Page() {
                     <p className="text-balance text-sm text-muted-foreground font-semibold font-aileron">
                       Step {steps} of 3
                     </p>
-                    <h1 className="text-2xl font-bold font-aileron tracking-wide">Create an account</h1>
+                    <h1 className="text-2xl font-bold font-aileron tracking-wide">
+                      Create an account
+                    </h1>
                   </div>
                 </div>
                 <div className="grid gap-6">
@@ -529,7 +509,12 @@ export default function Page() {
                   </div>
 
                   <div>
-                    <Label htmlFor="password" className="font-aileron font-semibold">Password</Label>
+                    <Label
+                      htmlFor="password"
+                      className="font-aileron font-semibold"
+                    >
+                      Password
+                    </Label>
                     <div className="relative flex items-center mt-0">
                       <Input
                         id="password"
@@ -555,7 +540,12 @@ export default function Page() {
                   </div>
 
                   <div>
-                    <Label htmlFor="password" className="font-aileron font-semibold">Repeat password</Label>
+                    <Label
+                      htmlFor="password"
+                      className="font-aileron font-semibold"
+                    >
+                      Repeat password
+                    </Label>
                     <div className="relative flex items-center mt-0">
                       <Input
                         id="confirmPassword"

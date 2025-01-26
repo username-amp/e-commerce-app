@@ -2,6 +2,10 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import fetchGraphQL from "@/utils/fetchGraphQL"; // @/utils/fetchGraphQL
+import { VERIFY_CODE_MUTATION } from "@/graphql/mutations/verifyCode";
+import { CONFIRM_CODE_MUTATION } from "@/graphql/mutations/confirmCode";
+import { RESET_PASSWORD_MUTATION } from "@/graphql/mutations/resetPassword";
+import { GET_USER_QUERY } from "@/graphql/queries/getUsernameByEmail";
 import { LogoHeader } from "@/components/ui/header";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
@@ -18,46 +22,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { HiEye, HiEyeOff } from "react-icons/hi";
 import { MdMarkEmailUnread } from "react-icons/md";
 import { validateEmail } from "@/utils/email-validator";
-
-const VERIFY_CODE_MUTATION = `
-  mutation VerifyCode($email: String!) {
-    verifyCode(email: $email) {
-      code
-      status
-      message
-    }
-  }
-`;
-
-const CONFIRM_CODE_MUTATION = `
- mutation ConfirmCode($email: String!, $code: String!) {
-  confirmCode(email: $email, code: $code) {
-    code
-    status
-    message
-  }
-}
-
-
-`;
-
-const RESET_PASSWORD_MUTATION = `
-  mutation ResetPassword($email: String!, $newPassword: String!) {
-    resetPassword(email: $email, newPassword: $newPassword) {
-      code
-      status
-      message
-    }
-  }
-`;
-
-const GET_USER_QUERY = `
-  query GetUserByEmail($email: String!) {
-    getUsernameByEmail(email: $email) {
-      username
-    }
-  }
-`;
 
 const page = () => {
   const [firstPassShow, setFirstPassShow] = useState(false);
@@ -306,7 +270,9 @@ const page = () => {
                   )}
                 >
                   <div className="flex flex-col items-start gap-2 text-start">
-                    <h1 className="text-2xl font-bold font-aileron tracking-wide">Recover your account</h1>
+                    <h1 className="text-2xl font-bold font-aileron tracking-wide">
+                      Recover your account
+                    </h1>
                     <p className="text-balance text-sm text-muted-foreground font-semibold font-aileron ">
                       Already have an account?
                       <Link
@@ -319,7 +285,12 @@ const page = () => {
                   </div>
                   <div className="grid gap-2">
                     <div className="grid gap-2">
-                      <Label htmlFor="email" className="font-aileron  font-bold">Email</Label>
+                      <Label
+                        htmlFor="email"
+                        className="font-aileron  font-bold"
+                      >
+                        Email
+                      </Label>
                       <Input
                         id="email"
                         type="text"
@@ -332,12 +303,16 @@ const page = () => {
 
                     {/* Reminder text */}
 
-                    {error.email 
-                                ? <p className="text-sm text-red-500 font-bold mt-0 font-aileron">{error.email}</p>
-                                : <p className="text-sm text-muted-foreground mt-0 font-aileron font-normal"> We need your registered email to send you an OTP</p>
-                    }
-
-               
+                    {error.email ? (
+                      <p className="text-sm text-red-500 font-bold mt-0 font-aileron">
+                        {error.email}
+                      </p>
+                    ) : (
+                      <p className="text-sm text-muted-foreground mt-0 font-aileron font-normal">
+                        {" "}
+                        We need your registered email to send you an OTP
+                      </p>
+                    )}
 
                     <Button
                       type="button"
@@ -360,18 +335,21 @@ const page = () => {
                     <MdMarkEmailUnread />
                   </div>
                   <div className="flex flex-col items-start gap-2 text-start">
-                    <h1 className="text-4xl font-bold font-aileron">Update your password</h1>
+                    <h1 className="text-4xl font-bold font-aileron">
+                      Update your password
+                    </h1>
 
                     <p className="text-muted-foreground text-sm mt-5 font-aileron  font-normal">
                       Enter the code we just sent to
                     </p>
 
-                    <p className="text-sm font-bold font-aileron">{email || "Jepoydizon@gmail.com"}</p>
+                    <p className="text-sm font-bold font-aileron">
+                      {email || "Jepoydizon@gmail.com"}
+                    </p>
                   </div>
                   <div className="grid gap-2">
                     <div className="flex justify-start w-full font-aileron">
-                       <InputOTP
-
+                      <InputOTP
                         maxLength={6}
                         value={otp}
                         onChange={(val) => setOtp(val)}
@@ -410,7 +388,6 @@ const page = () => {
                     </div>
 
                     <div className="flex justify-center">
-
                       {/* Timer Display */}
                       {timer > 0 && (
                         <p className="text-sm mr-9 mt-5 font-bold">
@@ -419,7 +396,6 @@ const page = () => {
                           ).padStart(2, "0")}`}
                         </p>
                       )}
-
                     </div>
 
                     <div className="flex justify-end items-center">
@@ -460,9 +436,9 @@ const page = () => {
                   <div className="flex flex-col gap-2 bg-white p-10 rounded-lg">
                     <div className="flex flex-col items-start gap-2 text-start">
                       <div>
-
-                        <h1 className="text-4xl font-bold font-aileron">Update your password</h1>
-
+                        <h1 className="text-4xl font-bold font-aileron">
+                          Update your password
+                        </h1>
                       </div>
                     </div>
 
@@ -473,16 +449,23 @@ const page = () => {
                       </Avatar>
 
                       <div className="flex justify-center items-start flex-col h-full">
-
-                        <h3 className="text-md font-semibold font-aileron">{email || "Jepoydizon@gmail.com"}</h3>
-                        <h5 className="text-sm text-muted-foreground font-aileron font-normal">{username || "Jepoydizon"}</h5>
-
+                        <h3 className="text-md font-semibold font-aileron">
+                          {email || "Jepoydizon@gmail.com"}
+                        </h3>
+                        <h5 className="text-sm text-muted-foreground font-aileron font-normal">
+                          {username || "Jepoydizon"}
+                        </h5>
                       </div>
                     </div>
 
                     <div className="grid gap-6">
                       <div>
-                        <Label htmlFor="password" className="font-semibold font-aileron">New password</Label>
+                        <Label
+                          htmlFor="password"
+                          className="font-semibold font-aileron"
+                        >
+                          New password
+                        </Label>
                         <div className="relative flex items-center mt-0">
                           <Input
                             id="password"
@@ -507,7 +490,12 @@ const page = () => {
                       </div>
 
                       <div>
-                        <Label htmlFor="password" className="font-semibold font-aileron">Repeat password</Label>
+                        <Label
+                          htmlFor="password"
+                          className="font-semibold font-aileron"
+                        >
+                          Repeat password
+                        </Label>
                         <div className="relative flex items-center mt-0">
                           <Input
                             id="confirmPassword"

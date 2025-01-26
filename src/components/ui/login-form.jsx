@@ -10,9 +10,17 @@ import { Label } from "@/components/ui/label";
 import { HiEye, HiEyeOff } from "react-icons/hi";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa6";
-import axios from "axios";
-import { signIn } from "next-auth/react";
-import { getSession } from "next-auth/react";
+import { getAuth, FacebookAuthProvider } from "firebase/auth";
+import {
+  auth,
+  googleProvider,
+  signInWithPopup,
+  facebookProvider,
+} from "@/services/firebaseConfig";
+import fetchGraphQL from "@/utils/fetchGraphQL";
+import { SIGNIN_MUTATION } from "@/graphql/mutations/signIn";
+import { GOOGLE_SIGNIN_MUTATION } from "@/graphql/mutations/googleSignIn";
+import { FACEBOOK_SIGNIN_MUTATION } from "@/graphql/mutations/facebookSignin";
 
 export function LoginForm({ className, ...props }) {
   const [showPassword, setShowPassword] = useState(false);
@@ -29,182 +37,92 @@ export function LoginForm({ className, ...props }) {
     e.preventDefault();
 
     try {
-      const response = await axios.post("http://localhost:8003/graphql", {
-        query: `
-        mutation Signin($emailOrUsername: String!, $password: String!) {
-          signin(emailOrUsername: $emailOrUsername, password: $password) {
-            message
-            token
-          }
-        }
-      `,
-        variables: {
-          emailOrUsername,
-          password,
-        },
+      const response = await fetchGraphQL(SIGNIN_MUTATION, {
+        emailOrUsername,
+        password,
       });
 
-      if (response.data?.data?.signin?.token) {
-        const { token, message } = response.data.data.signin;
+      if (response.data?.signin?.token) {
+        const { token, message } = response.data.signin;
 
-        // Store token in cookies
         document.cookie = `authToken=${token}; path=/; secure; samesite=strict`;
 
-        // Redirect to the homepage
         router.push("/");
       } else {
-        setErrorHandler("Invalid credentials"); // Set error message
+        setErrorHandler("Invalid credentials");
       }
     } catch (error) {
       console.error("Error occurred during sign-in:", error);
+
       if (error.response) {
         console.error("Error response data:", error.response.data);
         console.error("Error response status:", error.response.status);
         console.error("Error response headers:", error.response.headers);
+
+        console.error("Error without response:", error.message);
       }
+
       setErrorHandler("Something went wrong. Please try again.");
     }
   };
 
   const handleGoogleLogin = async () => {
     try {
-      console.log("Starting Google sign-in...");
+      const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
 
-      // Initiate Google sign-in
-      const result = await signIn("google", { redirect: false });
-      console.log("Sign-in result:", result);
+      const { email, displayName, photoURL } = user;
 
-      if (!result) {
-        setErrorHandler("No result returned from Google sign-in.");
-        return;
-      }
-
-      if (result.error) {
-        setErrorHandler(`Google sign-in error: ${result.error}`);
-        return;
-      }
-
-      console.log("Google sign-in was successful:", result);
-
-      // Wait for the session to be fully established
-      const session = await getSession();
-      console.log("Session after sign-in:", session);
-
-      if (!session || !session.user) {
-        console.error("Failed to retrieve user details from session.");
-        setErrorHandler(
-          "Unable to retrieve user information. Please try again."
-        );
-        return;
-      }
-
-      const { email, name, image } = session.user;
-      console.log("Retrieved user data:", { email, name, image });
-
-      console.log("Sending user data to backend...");
-      const response = await axios.post("http://localhost:8003/graphql", {
-        query: `mutation GoogleSignIn($email: String!, $name: String!, $image: String) {
-    googleSignin(email: $email, name: $name, image: $image) {
-      message
-      token
-    }
-  }`,
-        variables: { email, name, image: image || null },
+      const response = await fetchGraphQL(GOOGLE_SIGNIN_MUTATION, {
+        email,
+        name: displayName,
+        image: photoURL || null,
       });
-      console.log("Response from backend:", response.data);
 
-      const token = response.data?.data?.googleSignIn?.token;
-      if (!token) {
-        console.error("Token not received from backend.");
+      const token = response.data?.googleSignin?.token;
+
+      if (token) {
+        document.cookie = `authToken=${token}; path=/dashboard; secure; samesite=strict`;
+        router.push("/dashboard");
+      } else {
         setErrorHandler("Sign-in failed. Please try again.");
-        return;
       }
-
-      console.log("Storing token in cookies...");
-      document.cookie = `authToken=${token}`;
-
-      console.log("Redirecting to '/'...");
-      router.push("/");
     } catch (error) {
-      console.error(
-        "An error occurred during Google sign-in:",
-        error?.message || error
-      );
+      console.error("Google Sign-in Error:", error);
       setErrorHandler("Something went wrong. Please try again.");
     }
   };
 
   const handleFacebookLogin = async () => {
     try {
-      console.log("Starting Facebook sign-in...");
+      const auth = getAuth();
+      const provider = new FacebookAuthProvider();
 
-      // Initiate Facebook sign-in
-      const result = await signIn("facebook", { redirect: false });
-      console.log("Sign-in result:", result); // Debugging
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
 
-      if (!result) {
-        console.error("No result returned from Facebook sign-in.");
-        setErrorHandler("Sign-in failed. No response received.");
-        return;
-      }
+      const { email, displayName, photoURL } = user;
 
-      if (result.error) {
-        console.error(`Facebook sign-in error: ${result.error}`);
-        const errorMessage =
-          result.error === "OAuthAccountNotLinked"
-            ? "This Facebook account is not linked to an existing account. Please sign up first."
-            : "Facebook sign-in failed. Please try again.";
-        setErrorHandler(errorMessage);
-        return;
-      }
-
-      console.log("Facebook sign-in was successful:", result);
-
-      // Wait for the session to be fully established
-      const session = await getSession();
-      console.log("Session after sign-in:", session); // Debugging session
-
-      if (!session || !session.user) {
-        console.error("Failed to retrieve user details from session.");
-        setErrorHandler(
-          "Unable to retrieve user information. Please try again."
-        );
-        return;
-      }
-
-      const { email, name, image } = session.user;
-
-      // Proceed to send the session data to the backend
-      console.log("Retrieved user data:", { email, name, image });
-
-      console.log("Sending user data to backend...");
-      const response = await axios.post("http://localhost:8003/graphql", {
-        query: `mutation FacebookSignIn($email: String!, $name: String!, $image: String) {
-        facebookSignin(email: $email, name: $name, image: $image) {
-          message
-          token
-        }
-      }`,
-        variables: { email, name, image: image || null },
+      const response = await fetchGraphQL(FACEBOOK_SIGNIN_MUTATION, {
+        email,
+        name: displayName,
+        image: photoURL || null,
       });
-      console.log("Response from backend:", response.data);
 
       const token = response.data?.data?.facebookSignIn?.token;
-      if (!token) {
+
+      if (token) {
+        document.cookie = `authToken=${token}; path=/dashboard; secure; samesite=strict`;
+
+        router.push("/dashboard");
+      } else {
         console.error("Token not received from backend.");
         setErrorHandler("Sign-in failed. Please try again.");
-        return;
       }
-
-      console.log("Storing token in cookies...");
-      document.cookie = `authToken=${token}`;
-
-      console.log("Redirecting to '/'...");
-      router.push("/");
     } catch (error) {
       console.error(
         "An error occurred during Facebook sign-in:",
-        error?.message || error
+        error.message || error
       );
       setErrorHandler("Something went wrong. Please try again.");
     }
@@ -217,19 +135,24 @@ export function LoginForm({ className, ...props }) {
       onSubmit={handleFormSubmit}
     >
       <div className="flex flex-col items-start gap-2 text-start">
-
-        <h1 className="text-2xl font-bold font-aileron tracking-wide">Sign in</h1>
+        <h1 className="text-2xl font-bold font-aileron tracking-wide">
+          Sign in
+        </h1>
         <p className="text-balance text-sm text-muted-foreground font-semibold font-aileron">
-          New user? 
-          <Link href="/signup" className="text-[#1d4ed8] ml-1 hover:text-[#1e40af]">
-
+          New user?
+          <Link
+            href="/signup"
+            className="text-[#1d4ed8] ml-1 hover:text-[#1e40af]"
+          >
             Create an account
           </Link>
         </p>
       </div>
       <div className="grid gap-6">
         <div className="grid gap-2">
-          <Label htmlFor="email" className="font-aileron font-semibold">Email or username</Label>
+          <Label htmlFor="email" className="font-aileron font-semibold">
+            Email or username
+          </Label>
           <Input
             id="email"
             type="text"
@@ -240,7 +163,9 @@ export function LoginForm({ className, ...props }) {
         </div>
         <div className="grid gap-2 relative">
           <div className="flex items-center">
-            <Label htmlFor="password" className="font-aileron font-semibold">Password</Label>
+            <Label htmlFor="password" className="font-aileron font-semibold">
+              Password
+            </Label>
             <Link
               href="/recovery"
               className="font-normal font-aileron text-[#1d4ed8] ml-auto text-sm underline-offset-4 hover:underline"

@@ -8,6 +8,8 @@ import { FaCcPaypal } from "react-icons/fa6";
 
 
 export default function UserDashFooter() {
+
+  const ngayongTaon = new Date().getFullYear();
   return (
     <div>
       <footer className="bg-[#37A6D8] text-white py-10 mt-5">
@@ -66,7 +68,7 @@ export default function UserDashFooter() {
           </div>
         </div>
         <div className="text-center mt-5">
-          <p>© 2023 TechnoZone. All Rights Reserved.</p>
+          <p>© {ngayongTaon} TechnoZone. All Rights Reserved.</p>
         </div>
       </footer>
     </div>
