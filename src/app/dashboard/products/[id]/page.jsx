@@ -1,12 +1,25 @@
+'use client'
+
+import React, { useState, use } from "react";
 import UserDashboardHeader from "@/components/ui/header";
 import Image from "next/image";
 import { Separator } from "@/components/ui/separator"
 import { FaShippingFast } from "react-icons/fa";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { Button } from "@/components/ui/button";
 
 export default function Page({ params }) {
  
-  const { id } = params;
-
+  const { id } = use(params);
+  const [quantity, setQuantity] = useState(1); 
 
   const rating =  3.0; // Default to 3 if no rating is passed
 
@@ -21,6 +34,10 @@ export default function Page({ params }) {
       stars.push("empty");
     }
   }
+
+
+  const handleIncrement = () => setQuantity(quantity + 1); 
+  const handleDecrement = () => setQuantity(Math.max(1, quantity - 1));
 
   return (
     <div>
@@ -82,11 +99,45 @@ export default function Page({ params }) {
                           <p>Shipping Fee</p>
                         </div>
                         <div>
-                          <p>Rodriguez, Rizal</p>
+                          <Select className="border-none">
+                            <SelectTrigger className="w-[180px] h-5">
+                              <SelectValue placeholder="address" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectGroup>
+                                <SelectLabel>Address</SelectLabel>
+                                <SelectItem value="apple">Rizal</SelectItem>
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
                           <p>₱35</p>
                         </div>
                       </section>
 
+                      {/* variants */}
+
+                      <section className="flex flex-row justify-between">
+                        <p>Variants</p>
+                          <Select className="border-none">
+                            <SelectTrigger className="w-[180px] h-5">
+                              <SelectValue placeholder="Variant" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectGroup>
+                                <SelectLabel>Variants</SelectLabel>
+                                <SelectItem value="apple">Rizal</SelectItem>
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
+                      </section>
+
+                      <section>
+                        <div className="flex items-center space-x-2">
+                          <Button onClick={handleDecrement} variant="outline">-</Button>
+                          <span className="text-lg">{quantity}</span>
+                          <Button onClick={handleIncrement} variant="outline">+</Button>
+                        </div>
+                      </section>
                     </div>
                 </div>
             </div>
