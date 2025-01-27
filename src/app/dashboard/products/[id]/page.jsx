@@ -23,6 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default function Page({ params }) {
  
@@ -86,18 +87,23 @@ export default function Page({ params }) {
                                 </CarouselItem>
                               ))}
                             </CarouselContent>
-                            <CarouselPrevious />
-                            <CarouselNext />
+                            <div className="absolute top-1/2 left-16 transform -translate-y-1/2 z-10">
+                              <CarouselPrevious className="bg-white text-black rounded-full p-2 shadow-lg" />
+                            </div>
+                      
+                            <div className="absolute top-1/2 right-16 transform -translate-y-1/2 z-10">
+                              <CarouselNext className="bg-white text-black rounded-full p-2 shadow-lg" />
+                            </div>
                           </Carousel>
                       </section>
                     </section>
                     {/* buying details */}
-                    <div className="flex justify-start items-start flex-col gap-3">
+                    <div className="flex justify-start items-start flex-col gap-3 flex-wrap ">
                       {/* product name */}
-                      <div className="text-lg font-bold tracking-wider">
-                        <h1>Product Name</h1>
+                      <div className="text-lg font-bold tracking-wider max-w-max w-96 ">
+                        <h1 className="text-lg break-words">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quibusdam dolores veritatis quae quaerat, consectetur totam temporibus! Nostrum impedit repellat est.</h1>
                       </div>
-                      {/* Rates */}
+                      {/* Rates */} 
                       <section className="flex h-5 items-center space-x-4 text-sm ">
                         <div>
                           {stars.map((star, index) => (
@@ -114,7 +120,7 @@ export default function Page({ params }) {
 
                       {/* Price */}
                       <section>
-                        <h2 className="font-bold text-3xl">₱35</h2>
+                        <h2 className="font-bold text-3xl text-[#2B8FD8]">₱35</h2>
                       </section>
                       
                       {/* Shipping */}
@@ -139,7 +145,7 @@ export default function Page({ params }) {
                               </SelectGroup>
                             </SelectContent>
                           </Select>
-                          <p className="mt-1 ml-3">₱35</p>
+                          <p className="mt-1 ml-3 text-[#2B8FD8] font-bold">₱35</p>
                         </div>
                       </section>
 
@@ -164,17 +170,21 @@ export default function Page({ params }) {
                       <div>
                         <p className="text-sm text-muted-foreground">Quantity</p>
                       </div>
-                        <div className="flex items-center space-x-2">
+                        <div className="flex items-center space-x-2 max-w-sm">
                           <Button onClick={handleDecrement} variant="outline">-</Button>
-                          <span className="text-lg">{quantity}</span>
+                          <span className="text-lg w-[20px] text-center">{quantity}</span>
                           <Button onClick={handleIncrement} variant="outline">+</Button>
                         </div>
                       </section>
 
                         {/* Cart and buy btn */}
-                      <section className="flex flex-row w-full gap-3 justify-between">
-                          <Button  className="h-14 w-56" variant="outline" >Add To Cart</Button>
-                          <Button className="h-14 w-56" variant="outline" >Buy Now</Button>
+                      <section className="flex flex-row w-full gap-3 justify-between mt-2">
+                          <Link href={"#"}>
+                            <Button  className="h-14 w-56 font-semibold border border-[#2B8FD8] text-[#2B8FD8] hover:text-[#37A6D8] hover:border-[#37A6D8]"    variant="outline" >Add To Cart</Button>
+                          </Link>
+                          <Link href={"#"}>
+                            <Button className="h-14 w-56 hover:text-muted-foreground font-semibold" variant="outline" >Buy Now</Button>
+                          </Link>
                       </section>
                     </div>
                 </div>
