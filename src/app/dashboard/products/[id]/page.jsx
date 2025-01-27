@@ -5,6 +5,14 @@ import UserDashboardHeader from "@/components/ui/header";
 import Image from "next/image";
 import { Separator } from "@/components/ui/separator"
 import { FaShippingFast } from "react-icons/fa";
+import { Card, CardContent } from "@/components/ui/card"
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel"
 import {
   Select,
   SelectContent,
@@ -44,9 +52,9 @@ export default function Page({ params }) {
         <UserDashboardHeader />
 
 
-        <div className="flex h-screen w-full">
-            <div className=" bg-gray-200 h-100 w-full">
-                <div className="flex flex-row">
+        <div className="flex h-screen w-full flex-col">
+            <div className=" bg-gray-200 h-full w-full flex justify-center items-center">
+                <div className="flex flex-row justify-center items-start gap-5">
                     {/* product image  */}
                     <section className="flex flex-col">
                       <Image
@@ -58,18 +66,39 @@ export default function Page({ params }) {
                       />
 
                       {/* Carousel */}
-                      <section>
-                        <h1>carousel</h1>
+                      <section className="w-full">
+                         <Carousel
+                            opts={{
+                              align: "start",
+                            }}
+                            className="w-full "
+                          >
+                            <CarouselContent>
+                              {Array.from({ length: 5 }).map((_, index) => (
+                                <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
+                                  <div className="p-1">
+                                    <Card>
+                                      <CardContent className="flex aspect-square items-center justify-center p-6">
+                                        <span className="text-3xl font-semibold">{index + 1}</span>
+                                      </CardContent>
+                                    </Card>
+                                  </div>
+                                </CarouselItem>
+                              ))}
+                            </CarouselContent>
+                            <CarouselPrevious />
+                            <CarouselNext />
+                          </Carousel>
                       </section>
                     </section>
                     {/* buying details */}
-                    <div className="flex justify-start items-start flex-col">
+                    <div className="flex justify-start items-start flex-col gap-3">
                       {/* product name */}
                       <div className="text-lg font-bold tracking-wider">
                         <h1>Product Name</h1>
                       </div>
                       {/* Rates */}
-                      <section className="flex h-5 items-center space-x-4 text-sm">
+                      <section className="flex h-5 items-center space-x-4 text-sm ">
                         <div>
                           {stars.map((star, index) => (
                             <span key={index} className="text-[#f1c232] text-xl">
@@ -78,9 +107,9 @@ export default function Page({ params }) {
                           ))}
                         </div>
                         <Separator orientation="vertical" className="bg-muted-foreground  " />
-                        <div>499 Ratings</div>
+                        <div>499 <span className="text-sm text-muted-foreground">Ratings</span></div>
                         <Separator orientation="vertical" className="bg-muted-foreground" />
-                        <div>1.3k Sold</div>
+                        <div>1.3k <span className="text-sm text-muted-foreground">Sold</span></div>
                       </section>
 
                       {/* Price */}
@@ -89,14 +118,14 @@ export default function Page({ params }) {
                       </section>
                       
                       {/* Shipping */}
-                      <section className="w-96 flex flex-row justify-between">
-                        <p>Shipping</p>
+                      <section className="w-full flex flex-row justify-between gap-5 mt-2">
+                        <p className="text-sm text-muted-foreground">Shipping</p>
                         <div>
                           <p><FaShippingFast /></p>
                         </div>
                         <div>
-                          <p>Shipping To</p>
-                          <p>Shipping Fee</p>
+                          <p className="text-sm text-muted-foreground">Shipping To</p>
+                          <p className="text-sm text-muted-foreground">Shipping Fee</p>
                         </div>
                         <div>
                           <Select className="border-none">
@@ -110,14 +139,13 @@ export default function Page({ params }) {
                               </SelectGroup>
                             </SelectContent>
                           </Select>
-                          <p>₱35</p>
+                          <p className="mt-1 ml-3">₱35</p>
                         </div>
                       </section>
 
                       {/* variants */}
-
-                      <section className="flex flex-row justify-between">
-                        <p>Variants</p>
+                      <section className="flex flex-row justify-between gap-16 mt-2">
+                        <p className="text-sm text-muted-foreground">Variants</p>
                           <Select className="border-none">
                             <SelectTrigger className="w-[180px] h-5">
                               <SelectValue placeholder="Variant" />
@@ -131,15 +159,28 @@ export default function Page({ params }) {
                           </Select>
                       </section>
 
-                      <section>
+                        {/* Quantity */}
+                      <section className="flex flex-row justify-between w-56 items-center">
+                      <div>
+                        <p className="text-sm text-muted-foreground">Quantity</p>
+                      </div>
                         <div className="flex items-center space-x-2">
                           <Button onClick={handleDecrement} variant="outline">-</Button>
                           <span className="text-lg">{quantity}</span>
                           <Button onClick={handleIncrement} variant="outline">+</Button>
                         </div>
                       </section>
+
+                        {/* Cart and buy btn */}
+                      <section className="flex flex-row w-full gap-3 justify-between">
+                          <Button  className="h-14 w-56" variant="outline" >Add To Cart</Button>
+                          <Button className="h-14 w-56" variant="outline" >Buy Now</Button>
+                      </section>
                     </div>
                 </div>
+            </div>
+            <div className="h-72 w-full bg-black">
+
             </div>
         </div>
     </div>
