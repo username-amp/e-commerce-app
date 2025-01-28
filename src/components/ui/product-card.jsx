@@ -33,7 +33,9 @@ export default function ProductCard({ imageUrl, name, price, sold, ratings }) {
 
           {/* Product details */}
           <div className="mt-1 p-2">
-            <h1 className="ml-2 font-bold text-lg">{name || "Product Name"}</h1>
+            <p className="ml-2 text-md truncate overflow-hidden w-full block text-ellipsis">
+              {name || "Product Name"}
+            </p>
             <h2 className="ml-2 font-semibold text-[#37A6D8] text-lg">
               {price ? `₱${price.toFixed(2)}` : "₱0.00"}
             </h2>
