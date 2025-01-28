@@ -12,14 +12,16 @@ import Categories from "@/components/ui/categories";
 import UserDashboardHeader from "@/components/ui/header";
 import UserDashFooter from "@/components/ui/footer";
 
-// Fetch utilities and query 
+// Fetch utilities and query
 import fetchGraphQL from "@/utils/fetchGraphQL";
 import { GET_HOME_PRODUCTS_QUERY } from "@/graphql/queries/getHomeProducts";
 
 export default function Page() {
-  const [products, setProducts] = useState([]);
+  const [allProducts, setAllProducts] = useState([]); // all products
+  const [currentProducts, setCurrentProducts] = useState([]); // displayed products
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [currentPage, setCurrentPage] = useState(0); // 0 = first page
 
   // Fetch home products
   useEffect(() => {
@@ -34,7 +36,8 @@ export default function Page() {
         }
 
         const homeProducts = data?.displayProduct?.data || [];
-        setProducts(homeProducts);
+        setAllProducts(homeProducts);
+        setCurrentProducts(homeProducts.slice(0, 30)); // first 30 products will display
       } catch (error) {
         setError("Failed to fetch home products");
         console.error("Error fetching home products:", error);
@@ -52,18 +55,12 @@ export default function Page() {
     setLoading(true);
 
     setTimeout(() => {
-      setProducts((prevProducts) => [
-        ...prevProducts,
-        ...Array.from({ length: 10 }, (_, i) => ({
-          _id: `mock-${prevProducts.length + i + 1}`,
-          name: `Product ${prevProducts.length + i + 1}`,
-          images: ["/productImg.png"],
-          price: (prevProducts.length + i + 1) * 10,
-          solds: (prevProducts.length + i + 1) * 100,
-          rating: (prevProducts.length + i + 1) % 5,
-        })),
-      ]);
-      setLoading(false);
+      const nextPage = currentPage + 1;
+      const start = nextPage * 30;
+      const end = start + 30;
+
+      setCurrentProducts(allProducts.slice(start, end)); // tas ung kasunod naman na batch
+      setCurrentPage(nextPage);
     }, 2000); // 2 sec nalang gar para masarap
   };
 
@@ -102,7 +99,7 @@ export default function Page() {
                     <Skeleton className="mt-1 h-[15px] w-[40%]" />
                   </div>
                 ))
-              : products.map((product) => (
+              : currentProducts.map((product) => (
                   <ProductCard
                     key={product._id}
                     imageUrl={product.images?.[0] || "/placeholder.png"}
@@ -120,7 +117,7 @@ export default function Page() {
           <Button
             className="w-72 p-5 bg-[#37A6D8] text-white font-bold tracking-wider hover:bg-[#35A6D8] mt-5"
             onClick={loadMoreProducts}
-            disabled={loading}
+            disabled={loading || currentProducts.length >= allProducts.length}
           >
             {loading ? "Loading..." : "See more"}
           </Button>
