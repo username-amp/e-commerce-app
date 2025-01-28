@@ -3,7 +3,7 @@ import Image from "next/image";
 
 export default function ProductCard({ imageUrl, name, price, sold, ratings }) {
   // Set a default rating if `ratings` is not provided
-  const rating = ratings || 3.0; // Default to 3 if no rating is passed
+  const rating = ratings || 0; // fallback to 0 if `ratings` is null
 
   // Create the star rating system
   const stars = [];
@@ -18,14 +18,14 @@ export default function ProductCard({ imageUrl, name, price, sold, ratings }) {
   }
 
   return (
-  <div className="w-56 h-auto mb-2  ">
+    <div className="w-56 h-auto mb-2  ">
       <Card className="flex flex-col h-auto rounded-none duration-300 ease-out border shadow-md hover:translate-y-[-5px] cursor-pointer ">
         <CardContent className="relative flex-1 p-0">
           {/* Product image */}
           <div className="h-40 relative">
             <Image
-              src={imageUrl || "/productImg.png"} 
-              alt={name || "product"} 
+              src={imageUrl || "/productImg.png"}
+              alt={name || "product"}
               layout="fill"
               objectFit="cover"
             />
@@ -40,7 +40,7 @@ export default function ProductCard({ imageUrl, name, price, sold, ratings }) {
 
             <div className="flex justify-between items-center mt-2">
               <h3 className="ml-2 text-sm font-medium text-muted-foreground">
-                {sold || "+0 sold"}
+                {sold ? `${sold} sold` : "+0 sold"}
               </h3>
 
               {/* Display stars */}
