@@ -17,6 +17,9 @@ import { Button } from "@/components/ui/button";
 
 import { FaShippingFast } from "react-icons/fa";
 import { CiLocationOn } from "react-icons/ci";
+
+
+// Kulang pa for select input
 export const ProductDetails = () => {
 
     const stars = setRatings(3.0);
@@ -125,9 +128,7 @@ export const ProductDetails = () => {
   )
 }
 
-// Props kulang
-
-export const ProductSpecification = () =>{
+export const ProductSpecification = ({category, stocks, hasWarranty, warrantyType, shipsFrom}) =>{
     return(
         <div className="w-full flex justify-center">
             <section className=" w-2/3 ">
@@ -137,27 +138,27 @@ export const ProductSpecification = () =>{
                     <div className="flex flex-col gap-5 w-72 justify-start">
                       <div className="flex flex-row gap-5 text-sm w-full justify-between">
                         <span className="text-muted-foreground">Category</span>
-                        <span>Laptops</span>
+                        <span>{category}</span>
                       </div>
 
                       <div className="flex flex-row gap-5 text-sm w-full justify-between">
                         <span className="text-muted-foreground">Stocks</span>
-                        <span>29125</span>
+                        <span>{stocks}</span>
                       </div>
 
                       <div className="flex flex-row gap-5 text-sm w-full justify-between">
                         <span className="text-muted-foreground">Warranty Duration</span>
-                        <span>No Warranty</span>
+                        <span>{!hasWarranty ? "No Warranty" : "6mo."}</span>
                       </div>
 
                       <div className="flex flex-row gap-5 text-sm w-full justify-between">
                         <span className="text-muted-foreground">Warranty Type</span>
-                        <span>No Warranty</span>
+                        <span>{!hasWarranty || !warrantyType ? "No Warranty" : "MIT"}</span>
                       </div>
 
                       <div className="flex flex-row gap-5 text-sm w-full justify-between items-start">
                         <span className="text-muted-foreground">Ships From</span>
-                        <span>Philippines</span>
+                        <span>{shipsFrom}</span>
                       </div>
                     </div>
                   </div>
@@ -166,7 +167,7 @@ export const ProductSpecification = () =>{
     );
 }
 
-export const ProductDescription = () =>{
+export const ProductDescription = ({descriptions}) =>{
     return(
         <div className="w-full flex justify-center">
             <section className=" w-2/3 ">
@@ -174,7 +175,10 @@ export const ProductDescription = () =>{
                     <h1 className="text-lg font-semibold">Product Description</h1>
 
                     <div className="flex flex-col gap-5 w-full justify-start">
-                          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Praesentium modi incidunt perferendis vitae minus dignissimos. Deserunt animi voluptas impedit eos non expedita, magni consequatur commodi itaque delectus cupiditate rem suscipit vero odit nostrum quaerat saepe necessitatibus? Natus impedit nobis autem ad modi dolorum, dolor at dignissimos quisquam laudantium quasi vel enim magnam reprehenderit placeat earum inventore? Recusandae quis commodi autem. Nam, placeat inventore! Sequi laudantium blanditiis maiores minima qui unde sit labore harum repellendus eius modi soluta quaerat vero magnam explicabo, provident sunt illum optio ratione autem cum natus ipsa nulla veritatis! Facilis natus nemo perspiciatis enim rerum, dolore numquam!
+                          {descriptions ? 
+                                        descriptions
+                                        : 
+                                        "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Praesentium modi incidunt perferendis vitae minus dignissimos. Deserunt animi voluptas impedit eos non expedita, magni consequatur commodi itaque delectus cupiditate rem suscipit vero odit nostrum quaerat saepe necessitatibus? Natus impedit nobis autem ad modi dolorum, dolor at dignissimos quisquam laudantium quasi vel enim magnam reprehenderit placeat earum inventore? Recusandae quis commodi autem. Nam, placeat inventore! Sequi laudantium blanditiis maiores minima qui unde sit labore harum repellendus eius modi soluta quaerat vero magnam explicabo, provident sunt illum optio ratione autem cum natus ipsa nulla veritatis! Facilis natus nemo perspiciatis enim rerum, dolore numquam!"}
                     </div>
                   </div>
                 </section>
@@ -182,7 +186,7 @@ export const ProductDescription = () =>{
     );
 }
 
-export const ProductTestimonials = () =>{
+export const ProductTestimonials = ({testimonials}) =>{
     return(
         <div className="w-full flex justify-center ">
             <section className="flex flex-col  w-2/3 gap-10">
@@ -191,7 +195,7 @@ export const ProductTestimonials = () =>{
             
                                 {/* Customers testimonials */}
                                   {
-                                    Array.from({ length: 5 }).map((_, index) => {
+                                    testimonials.map((testimonial, index) => {
                                       return (
                                         <div className="w-full border border-black rounded-sm p-3" key={index}>
                                           <div className="flex flex-row gap-5">
@@ -209,19 +213,24 @@ export const ProductTestimonials = () =>{
                                             </div>
                                             <div>
                                               <div className="flex flex-col w-full">
-                                                <h3 className="font-bold text-md">Username</h3>
+                                                <h3 className="font-bold text-md">{testimonial.username}</h3>
                                                 <div className="flex flex-row w-full ">
                                                   <div className="flex gap-1 w-full">
                                                     <CiLocationOn />
-                                                    <span className="text-xs text-muted-foreground"> Philippines, Rizal</span>
+                                                    <span className="text-xs text-muted-foreground"> {testimonial.location}</span>
                                                     <Separator orientation="vertical" className="bg-muted-foreground" />
-                                                    <span className="text-xs text-muted-foreground">2022-11-22 19:17</span>
+                                                    <span className="text-xs text-muted-foreground">{testimonial.created_at}</span>
                                                   </div>
                                                 </div>
             
                                                 {/* Customers comments */}
                                                 <div className="mt-5">
-                                                  Lorem ipsum, dolor sit amet consectetur adipisicing elit. Soluta, consequatur dolore. Tempore, laborum. Minima laboriosam adipisci sit minus totam accusamus enim, maxime ex veritatis dicta voluptates quis? Nulla dignissimos minima inventore suscipit exercitationem libero ipsam voluptatum possimus, vitae vel ratione aliquam atque fugit optio aperiam iusto, sint odio quaerat facilis explicabo enim ipsum repellat molestias. Eligendi aliquid assumenda cupiditate similique doloribus dignissimos esse accusamus ullam voluptatum magni animi, et omnis non quia optio necessitatibus officiis quod, ipsum, tenetur ea inventore quam laudantium reiciendis rerum? Doloremque nulla quaerat dolorum provident eum distinctio accusamus illo! Exercitationem recusandae odit fugit explicabo repellat facilis.
+                                                  {testimonial.testimonial ? 
+                                                                testimonial.testimonial
+                                                               :
+                                                               "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Soluta, consequatur dolore. Tempore, laborum. Minima laboriosam adipisci sit minus totam accusamus enim, maxime ex veritatis dicta voluptates quis? Nulla dignissimos minima inventore suscipit exercitationem libero ipsam voluptatum possimus, vitae vel ratione aliquam atque fugit optio aperiam iusto, sint odio quaerat facilis explicabo enim ipsum repellat molestias. Eligendi aliquid assumenda cupiditate similique doloribus dignissimos esse accusamus ullam voluptatum magni animi, et omnis non quia optio necessitatibus officiis quod, ipsum, tenetur ea inventore quam laudantium reiciendis rerum? Doloremque nulla quaerat dolorum provident eum distinctio accusamus illo! Exercitationem recusandae odit fugit explicabo repellat facilis."
+                                                  }
+                                                  
                                                 </div>
                                               </div>
                                             </div>

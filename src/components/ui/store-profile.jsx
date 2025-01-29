@@ -6,7 +6,7 @@ import { VscUnverified } from "react-icons/vsc";
 
 import { Button } from "@/components/ui/button";
 import Image from 'next/image';
-export default function StoreProfile({StoreName, verified, ratings, sold, products, joined_At}) {
+export default function StoreProfile({StoreName, verified, ratings, sold, products, joined_At, storePath}) {
 
  
 
@@ -35,7 +35,7 @@ export default function StoreProfile({StoreName, verified, ratings, sold, produc
                                 <span className="font-semibold text-muted-foreground text-sm">{verified ? 'Verified' : 'Unverified'}</span>
                               </div>
                               <div className="flex mt-2">
-                                <Link href={'#'}>
+                                <Link href={storePath}>
                                   <Button className="font-semibold border border-[#2B8FD8] text-[#2B8FD8] hover:text-[#37A6D8] hover:border-[#37A6D8]" variant="outline"><FaStore /> View Shop</Button>
                                 </Link>
                               </div>
