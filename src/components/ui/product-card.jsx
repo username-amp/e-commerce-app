@@ -58,7 +58,7 @@ export default function ProductCard({
                 <div className="flex ml-2">
                   {stars.map((star, index) => (
                     <span key={index} className="text-[#f1c232] text-xl">
-                      {star === "full" ? "★" : star === "half" ? "✩" : "☆"}
+                      {star === "full" ? "★" : star === "half" ? "⯪" : "☆"}
                     </span>
                   ))}
                 </div>
